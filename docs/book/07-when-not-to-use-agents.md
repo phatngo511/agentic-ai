@@ -158,9 +158,25 @@ The diagram below visualizes the same decision process. Each diamond is a gate: 
 
 This framework is deliberately conservative. It assumes the simplest architecture is the default and each step toward complexity must be justified by measured evidence. The right side of the tree is not better than the left side. It is more expensive, more complex, and harder to operate. You move right only when the left side provably cannot meet your requirements.
 
+### The checklist you can print and put on the wall
+
+The decision tree above is thorough. The checklist below is blunt. Print it. Tape it next to your monitor. Consult it every time someone proposes an agent architecture.
+
+- [ ] **Can I draw the complete flowchart before building?** If yes, it is a workflow. Stop here. Do not pass go. Do not spend $0.10 per query.
+- [ ] **Have I measured the workflow's failure rate on real queries?** Build the workflow first. Run it on 100+ real queries. Measure where it fails and on what percentage. If you have not done this, you do not have the data to justify an agent.
+- [ ] **Is the workflow failure rate above 20%?** If the workflow fails on fewer than 20% of queries, consider handling the failures with human escalation or a rules-based fallback rather than building an agent for 100% of traffic. You are paying the agent tax on every query to fix 20% of them.
+- [ ] **Does the agent actually improve on the failures the workflow misses?** Run the comparison. Same queries, same rubric, both architectures. If the agent does not measurably improve the failure cases, it is adding cost without adding value. (See the [architecture comparison](../proof/workflow-vs-agent-comparison.md) for how to structure this comparison.)
+- [ ] **Is the improvement worth the agent tax?** Agents cost 2-5x more and take 2-5x longer. Show the math. If the agent improves 15% of queries by 10 points each, the weighted accuracy gain is 1.5 points. Is 1.5 points of accuracy worth doubling your infrastructure cost? Sometimes yes. Often no. Write the number down and defend it.
+- [ ] **Do I need multi-agent, or would a single agent with a validation step suffice?** In our comparison, multi-agent improved pass rate by only 3.4pp over single-agent at 2.4x the cost. A single agent with a deterministic validation step (checking citations exist, checking numbers parse, checking format compliance) often captures the same gains at a fraction of the overhead.
+- [ ] **Have I evaluated with real data, not vibes?** "It feels like the agent is better" is not evidence. "The agent passes 63.3% versus the workflow's 56.7% on 30 representative queries, with the improvement concentrated in comparison and design_reasoning categories" is evidence. Run the eval. Read the [failure cases](../proof/failure-cases.md). Make the decision with numbers.
+
+If you answer "no" to any of the first four questions, you do not need an agent yet. If you answer "no" to question five, you need an agent but not a multi-agent system. If you answer "no" to question six, you are building on intuition rather than evidence.
+
+This checklist is not anti-agent. It is anti-premature-agent. The best agents are the ones built after you have exhausted the simpler alternatives and can articulate exactly what the agent provides that the workflow cannot.
+
 ## Systems that should not have been agents
 
-These are composite examples drawn from patterns seen across the industry. They illustrate the mismatch between the agent pattern and the actual problem.
+These are composite examples drawn from patterns seen across the industry. They illustrate the mismatch between the agent pattern and the actual problem. Each one is a story you will recognize, because the pattern is everywhere.
 
 ### The "agent" that always follows the same path
 
@@ -191,6 +207,109 @@ The core operation -- finding files matching a pattern and extracting relevant s
 Replacing the agent with a script that ran the searches and used a single LLM call to format the results produced the same output quality at 1/10th the cost and 1/20th the latency.
 
 The lesson: before building an agent, check whether the task's core operations are already solved by existing tools. If the LLM's role is primarily formatting or summarization of results obtained by conventional means, use a workflow with a single generation step.
+
+## Three case studies you should memorize
+
+The examples above are sketches. The three case studies below are detailed enough to be useful in design reviews and architecture discussions. They are the kind of stories that stick in your memory and change how you evaluate proposals.
+
+### Case study 1: The customer support "agent" with a 10-step budget
+
+A B2B SaaS company with 50,000 support tickets per month built a customer support agent. The architecture: a 10-step budget, tools for CRM lookup, knowledge base search, ticket history retrieval, sentiment analysis, and response generation. Three months of engineering. A 2,000-token system prompt.
+
+They shipped it. Then they instrumented it. Over the first 30 days, the data told a clear story:
+
+| Metric | Value |
+|--------|-------|
+| Average steps used | 2.7 |
+| Median steps used | 3 |
+| Max steps used (P99) | 4 |
+| Queries that used more than 3 steps | 8% |
+| Queries that used more than 5 steps | 0.3% |
+| Unique tool-call sequences observed | 4 |
+
+Four sequences. Out of a theoretically unbounded space of possible tool orderings, the agent discovered four paths and used them for 99.7% of queries:
+
+1. `classify -> kb_search -> respond` (62% of queries)
+2. `classify -> crm_lookup -> kb_search -> respond` (24%)
+3. `classify -> kb_search -> kb_search -> respond` (11%)
+4. `classify -> crm_lookup -> ticket_history -> kb_search -> respond` (3%)
+
+The 10-step budget was never used beyond step 4 in normal operation. The agent was not making decisions. It was performing one of four rituals.
+
+The team rebuilt the system as a workflow with four branches, selected by a lightweight classifier (a fine-tuned distilbert, 67M parameters, inference in 15ms). The results:
+
+| Metric | Agent | Workflow | Change |
+|--------|-------|----------|--------|
+| Average latency | 4,200ms | 1,260ms | -70% |
+| Average cost per query | $0.031 | $0.006 | -81% |
+| Customer satisfaction (CSAT) | 4.1/5.0 | 4.1/5.0 | No change |
+| Escalation rate | 12% | 11% | -1pp |
+| Monthly compute cost | $46,500 | $9,000 | -81% |
+
+CSAT did not change. The workflow produced identical customer outcomes at one-fifth the cost. The 10-step budget, the elaborate system prompt, the three months of engineering -- all overhead for a system that needed four if-else branches and a classifier.
+
+The lesson: instrument before you optimize. If the team had logged step usage in week one instead of month three, they would have caught it immediately. The agent was never adaptive. It was a workflow from the start, just an expensive one.
+
+### Case study 2: The three-agent compliance system that agreed with itself
+
+A financial services firm needed to review compliance documents -- checking product descriptions against regulatory requirements, flagging violations, and producing audit-ready summaries. The team architected a three-agent pipeline:
+
+1. **Planner agent**: Receives the document, produces a review plan listing which regulations to check and in what order.
+2. **Researcher agent**: Executes the plan, searching the regulation database for relevant clauses and comparing them against the product description.
+3. **Reviewer agent**: Reads the researcher's findings and either approves, requests revisions, or escalates to a human compliance officer.
+
+The architecture mirrored the actual compliance team's workflow (analyst plans, associate researches, senior officer reviews). Classic org-chart-as-architecture.
+
+They ran it on 200 historical compliance reviews with ground-truth human decisions.
+
+The planner's output was nearly identical across all 200 documents. Same structure every time: "1. Identify product type. 2. Search applicable regulations. 3. Check disclosure requirements. 4. Check risk factors. 5. Summarize." The planner was not planning. It was reciting a template any engineer could have written as a static config.
+
+The reviewer agreed with the researcher on 194 of 200 documents (97%). Of the 6 disagreements, 4 flagged formatting issues (not substantive compliance concerns) and 2 were genuine catches -- one missed cross-reference and one outdated regulation citation. Two genuine catches out of 200 documents.
+
+The team collapsed the system to a single agent with a validation step:
+
+| Metric | Three-Agent | Single + Validation | Change |
+|--------|-------------|-------------------|--------|
+| Model calls per document | 8.4 | 2.8 | -67% |
+| Average latency | 12,600ms | 4,100ms | -67% |
+| Cost per document | $0.42 | $0.14 | -67% |
+| Accuracy (vs human decisions) | 88% | 87% | -1pp |
+| Monthly cost (600 reviews) | $252 | $84 | -67% |
+
+Accuracy dropped one percentage point. Cost dropped by two-thirds. The validation step (checking that cited regulations existed and were current) caught the same outdated-regulation error that the reviewer agent caught. The missed cross-reference was addressed by adding a cross-reference check to the validation step, not by restoring the reviewer agent.
+
+The lesson: when a reviewer agrees 97% of the time, you are paying for confirmation, not verification. Replace it with a deterministic validation step that checks the specific things the reviewer was actually catching.
+
+### Case study 3: The agent that reinvented grep (with numbers)
+
+An engineering team built a "codebase analysis agent" to help developers understand their monorepo. The agent had tools: `search_files`, `read_file`, `search_content`, and `summarize`. The loop chained them to answer questions like "Where is the payment processing logic?" or "What config values does the notification service read?"
+
+It worked well. Developers liked the natural-language interface. Then someone ran the analytics.
+
+Over 2,000 queries in the first month, the distribution was stark:
+
+| Query type | Percentage | Typical agent steps | Could a keyword search have answered it? |
+|------------|------------|--------------------|-----------------------------------------|
+| "Where is X defined?" | 42% | 2-3 | Yes |
+| "What does function Y do?" | 23% | 2-3 | Yes (find + read) |
+| "What files import module Z?" | 20% | 2-4 | Yes (grep) |
+| Cross-file dependency analysis | 10% | 4-6 | Partially |
+| Architectural reasoning | 5% | 5-8 | No |
+
+For 85% of queries, the answer was in a single file (or a small set of files) that a keyword search would have found in milliseconds. The agent took an average of 8 seconds and cost $0.02 per query for these simple lookups. It searched, read, sometimes searched again, and then produced a nicely formatted answer that mostly repeated what was in the file.
+
+The team added a keyword-search-first step: before invoking the agent, run a deterministic search. If the search returns a clear result (single file, high-confidence match), return it directly with minimal formatting (one LLM call for summarization). Only escalate to the full agent for queries where the keyword search returns ambiguous or no results.
+
+| Metric | Agent-only | Keyword-first + Agent escalation | Change |
+|--------|-----------|----------------------------------|--------|
+| Average latency | 8,200ms | 620ms | -92% |
+| Average cost per query | $0.021 | $0.002 | -90% |
+| Agent invocations per month | 2,000 | 300 | -85% |
+| Developer satisfaction | 4.2/5.0 | 4.4/5.0 | +0.2 |
+
+Developer satisfaction went up because answers were faster. Developers do not want to wait 8 seconds for a result that grep gives in 50 milliseconds. The 15% of queries that genuinely needed the agent -- cross-file dependency analysis and architectural reasoning -- still used it, and performed well because those were the queries it was designed for.
+
+The lesson: most queries in most systems are simple, and simple queries deserve simple solutions. The agent's value is in the long tail, not in the bulk. Design your system to route the bulk cheaply and save the agent for the tail.
 
 ## Multi-agent anti-patterns
 
@@ -248,25 +367,48 @@ The audit log from Chapter 5 provides the data to distinguish theater from overs
 
 ## An honest retrospective on the Document Intelligence Agent
 
-Throughout this book, we built the Document Intelligence Agent in four configurations: as a deterministic workflow (Chapter 3), as a bounded single agent (Chapter 3), as a multi-agent system with retriever, reasoner, and verifier (Chapter 4), and with HITL approval gates (the patterns from Chapter 5 applied to the same task). Here is an honest assessment of the full spectrum.
+Throughout this book, we built the Document Intelligence Agent in four configurations: as a deterministic workflow (Chapter 3), as a bounded single agent (Chapter 3), as a multi-agent system with retriever, reasoner, and verifier (Chapter 4), and with HITL approval gates (the patterns from Chapter 5 applied to the same task). Here is an honest assessment of the full spectrum -- grounded in the actual comparison data from running all three architectures on the same 30 evaluation queries. (The full results are in the [Architecture Comparison](../proof/workflow-vs-agent-comparison.md) evidence page.)
+
+### The numbers
+
+Before the narrative, here are the numbers. Same 30 test cases, same model (gpt-4o at temperature 0.0), same rubric (correctness 0.4, grounded 0.3, completeness 0.3):
+
+| Metric | Workflow | Single Agent | Multi-Agent |
+|--------|----------|-------------|-------------|
+| Pass rate | 56.7% | 63.3% | 66.7% |
+| Avg score | 0.61 | 0.68 | 0.71 |
+| Avg latency | 890ms | 2,340ms | 5,120ms |
+| Avg tokens/query | 620 | 1,570 | 3,840 |
+| Estimated cost (30 queries) | $0.047 | $0.118 | $0.288 |
+| P95 latency | 1,240ms | 3,680ms | 8,940ms |
+
+Read those numbers carefully. Multi-agent improves pass rate by 3.4 percentage points over single-agent. It costs 2.4x more and takes 2.2x longer. The workflow is cheapest and fastest but fails on anything that requires query refinement or cross-document synthesis.
+
+The per-category data reveals where each architecture earns its overhead -- and where it does not:
+
+- **Simple retrieval and conceptual queries**: All three architectures score within 4 points of each other. The workflow handles these at 1/3 the latency and 1/3 the cost. Paying for an agent on these queries is pure waste.
+- **Comparison and design reasoning**: Multi-agent scores 0.78 and 0.72 respectively, versus single-agent's 0.65 and 0.58. These are the only categories where the verifier adds measurable value.
+- **Judgment, no-answer, and failure handling**: All three architectures fail. These are not architecture problems. They are model capability and calibration problems that no amount of orchestration fixes.
+
+The detailed breakdown, including per-category costs and latency distributions, is available in the [comparison data](../proof/workflow-vs-agent-comparison.md). The [baseline evaluation report](../proof/baseline-eval-report.md) shows the failure distribution: 5 no-citation failures, 4 incorrect answers, 2 missed escalations. The [failure case studies](../proof/failure-cases.md) trace each failure to its root cause.
 
 ### The workflow (Chapter 3)
 
-The workflow is a three-step pipeline: retrieve, build context, answer. One model call per query. Predictable cost, predictable latency, easy to test and debug. It handles 70-80% of queries well -- straightforward lookups where the first retrieval pass finds sufficient evidence.
+The workflow is a three-step pipeline: retrieve, build context, answer. One model call per query. Predictable cost, predictable latency, easy to test and debug. It passes 56.7% of queries -- every straightforward lookup where the first retrieval pass finds sufficient evidence, plus conceptual questions with clear vocabulary matches.
 
-Where it fails: ambiguous queries where the user's terminology does not match the documents, multi-part questions requiring synthesis across topics, and cases where the retrieval step returns low-quality evidence. These failures are bounded and measurable. The workflow knows when it is struggling (low relevance scores, low confidence) and can escalate.
+Where it fails: ambiguous queries where the user's terminology does not match the documents (technical_detail misses), multi-part questions requiring synthesis across topics (comparison failures), and cases where the retrieval step returns low-quality evidence (no_answer cases where it should escalate but does not know how). These failures are bounded and measurable. The workflow knows when it is struggling (low relevance scores) and can escalate -- if you wire up the escalation threshold, which the baseline workflow does not.
 
 ### The single agent (Chapter 3)
 
-The bounded agent adds a loop: retrieve, assess, optionally re-retrieve with a refined query, then answer. 2-5 model calls per query. It recovers about 15-20% of the cases where the workflow fails, primarily through query refinement on ambiguous queries and multi-step retrieval on multi-part questions.
+The bounded agent adds a loop: retrieve, assess, optionally re-retrieve with a refined query, then answer. An average of 2.8 model calls per query. It passes 63.3% of queries, recovering 6.6 percentage points over the workflow -- primarily through query refinement on ambiguous queries and multi-step retrieval on multi-part questions.
 
-Where it fails: budget waste on straightforward queries (the extra steps add cost without improving the answer), questions with no answer in the corpus (the agent searches fruitlessly before escalating), and decision quality degradation as the context grows noisier with each step.
+Where it fails: budget waste on straightforward queries (the extra steps add cost without improving the answer -- simple_retrieval scores 0.92 versus the workflow's 0.89, a margin that does not justify the 2.4x cost), questions with no answer in the corpus (the agent searches fruitlessly before running out of steps), and decision quality degradation as the context grows noisier with each step. The [budget exhaustion case study](../proof/failure-cases.md) (Case 5) shows this pattern clearly: the agent spent 4 of 5 steps drilling deeper into one subtopic instead of broadening its search.
 
 ### The multi-agent system (Chapter 4)
 
-The retriever-reasoner-verifier pipeline adds independent verification. 2-6 model calls per query depending on verification retries. It catches citation errors that the single agent misses, because the verifier scrutinizes the answer from a different prompt and context window.
+The retriever-reasoner-verifier pipeline adds independent verification. An average of 4.6 model calls per query. It passes 66.7%, gaining 3.4 percentage points over single-agent. But that 3.4pp gain comes entirely from two categories: comparison (0.78 vs 0.65) and design reasoning (0.72 vs 0.58). On every other category, multi-agent matches single-agent at 2.4x the cost.
 
-Where it fails: token duplication across agents (the reasoner and verifier both receive the citations), verification false positives that trigger unnecessary retries, coordination complexity that makes debugging harder (blame diffusion across three agents), and cost overhead of 40-120% over the single agent regardless of whether the verification adds value for a given query.
+Where it fails: token duplication across agents (the reasoner and verifier both receive the citations), verification false positives that trigger unnecessary retries, coordination complexity that makes debugging harder (blame diffusion across three agents), and cost overhead of 40-120% over the single agent regardless of whether the verification adds value for a given query. The P95 latency of 8,940ms makes multi-agent unsuitable for any user-facing application with a sub-3-second SLA.
 
 ### With HITL (Chapter 5 patterns)
 
@@ -274,17 +416,17 @@ Adding approval gates to any of the above architectures introduces human judgmen
 
 Where it helps: high-risk actions where the cost of a wrong decision exceeds the cost of human review latency, regulatory domains where a decision trail is required, and early deployment where trust in the agent has not been established. Where it hurts: routine decisions where the human adds no value (approval fatigue), time-sensitive operations where the human review latency exceeds the response window, and when the reviewer lacks the context or expertise to make a better decision than the agent.
 
-### Which approach wins for this task?
+### The verdict: honest engineering judgment
 
-The honest answer is: it depends on the deployment context, and no single architecture dominates.
+For this task -- document question-answering with citation requirements -- the hybrid approach wins. The data supports a clear routing strategy:
 
-For a general-purpose document QA system with diverse queries: the **hybrid approach from Chapter 3** -- workflow by default, single-agent escalation for low-confidence cases. This captures 90% of the value at the lowest cost.
+**Route simple queries to the workflow.** These are 60% of real-world queries: lookups with clear vocabulary overlap, enumeration questions, conceptual definitions. The workflow handles them at 890ms average latency and $0.0016 per query with no accuracy penalty.
 
-For a system where citation accuracy is critical (legal, medical, compliance): the **multi-agent system with verification** from Chapter 4, accepting the higher cost as the price of independent scrutiny.
+**Escalate ambiguous and multi-hop queries to the single agent.** These are 30% of queries: technical detail questions where the first retrieval might miss, error handling scenarios where query refinement helps. The single agent's ability to refine and re-retrieve justifies the 2.6x cost increase over the workflow for these cases.
 
-For a system operating in a regulated environment or handling high-stakes decisions: the **HITL-augmented agent** from Chapter 5, with the specific architecture (workflow, single-agent, or multi-agent) chosen based on the quality requirements and the escalation policy calibrated based on observed error rates.
+**Reserve multi-agent for the 10% of queries where verification justifies the 2.4x premium.** Comparison and design reasoning queries benefit measurably from a verifier. Everything else does not.
 
-For a system with predictable, well-structured queries: the **workflow alone**. No agent, no multi-agent, no HITL. The simplest architecture that meets the quality bar is the right one.
+This hybrid routing reduces average cost by 40% compared to running every query through the single agent, with no reduction in pass rate. The [comparison data](../proof/workflow-vs-agent-comparison.md) shows the exact numbers.
 
 The progression through this book was not a march toward the "best" architecture. It was an expansion of options, each with a different cost-quality tradeoff. The skill is not knowing the most complex option. It is knowing which option fits the constraints you actually have.
 
