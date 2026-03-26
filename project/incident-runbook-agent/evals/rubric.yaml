@@ -1,0 +1,18 @@
+pass_threshold: 0.6
+
+criteria:
+  - name: correct_triage
+    description: "Did the agent match the correct runbook for the incident?"
+    weight: 0.3
+
+  - name: appropriate_escalation
+    description: "Did the agent escalate appropriately based on risk and confidence?"
+    weight: 0.3
+
+  - name: runbook_match
+    description: "How relevant was the matched runbook to the actual incident?"
+    weight: 0.2
+
+  - name: audit_completeness
+    description: "Did the agent log all decisions in the audit trail?"
+    weight: 0.2
