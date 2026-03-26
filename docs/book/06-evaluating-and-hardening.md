@@ -103,7 +103,7 @@ This report is designed to be committed to version control alongside the code. W
 The harness, rubric, and test cases form a continuous loop: run, score, categorize failures, fix the system, run again. This cycle is what distinguishes a production system from a prototype.
 
 <figure>
-  <img src="../diagrams/eval-loop.svg" alt="The evaluation loop showing the cycle from test cases through scoring and failure categorization to system improvement and re-evaluation" />
+  <img src="../../diagrams/eval-loop.svg" alt="The evaluation loop showing the cycle from test cases through scoring and failure categorization to system improvement and re-evaluation" />
   <figcaption>Figure 6.1: The evaluation loop -- from test cases through scoring to system improvement</figcaption>
 </figure>
 
@@ -174,7 +174,7 @@ The nesting is deliberate. A retrieval span might contain child spans for embedd
 The following diagram shows a traced agent execution as a waterfall of spans. Each bar represents one unit of work, its width proportional to time. The model calls dominate, but you can see exactly where time goes -- retrieval, context assembly, tool execution, and the second model call that uses the tool's output.
 
 <figure>
-  <img src="../diagrams/trace-waterfall.svg" alt="Trace waterfall showing a 1600ms agent execution decomposed into five spans: Retrieve, Build Context, Model Call #1, Tool extract, and Model Call #2" />
+  <img src="../../diagrams/trace-waterfall.svg" alt="Trace waterfall showing a 1600ms agent execution decomposed into five spans: Retrieve, Build Context, Model Call #1, Tool extract, and Model Call #2" />
   <figcaption>Figure 6.2: Trace waterfall -- agent execution decomposed into observable spans</figcaption>
 </figure>
 
@@ -287,7 +287,7 @@ Attach this to every `AgentResponse` and log it. Over time, you build a dataset 
 Agent systems have a specific threat model that traditional software does not share. Understanding where trust boundaries lie is the first step toward enforcing them.
 
 <figure>
-  <img src="../diagrams/trust-boundaries.svg" alt="Trust boundaries diagram showing layers of trust from user input through retrieval to tool execution, with untrusted zones and permission checkpoints" />
+  <img src="../../diagrams/trust-boundaries.svg" alt="Trust boundaries diagram showing layers of trust from user input through retrieval to tool execution, with untrusted zones and permission checkpoints" />
   <figcaption>Figure 6.3: Trust boundaries -- layers of trust from user input to tool execution</figcaption>
 </figure>
 
@@ -385,7 +385,7 @@ None of this is optional for a production system. A system without evaluation is
 Agent systems fail in distinct, recognizable ways. The diagram below maps the failure surface: each region represents a different category of failure, with different root causes and different remediation paths.
 
 <figure>
-  <img src="../diagrams/failure-surfaces.svg" alt="Failure surfaces diagram mapping distinct failure modes in agent systems by category: hallucination, tool errors, loop failures, coordination failures, and security vulnerabilities" />
+  <img src="../../diagrams/failure-surfaces.svg" alt="Failure surfaces diagram mapping distinct failure modes in agent systems by category: hallucination, tool errors, loop failures, coordination failures, and security vulnerabilities" />
   <figcaption>Figure 6.4: Failure surfaces -- distinct failure modes mapped by category</figcaption>
 </figure>
 

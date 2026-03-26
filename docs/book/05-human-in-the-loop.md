@@ -58,7 +58,7 @@ class ApprovalGate:
 Three paths through the gate. High-risk actions always go to a human, regardless of confidence. High-confidence, lower-risk actions auto-approve. Everything else goes to a human. No ambiguity, no model interpretation, no prompt gymnastics.
 
 <figure>
-  <img src="../diagrams/hitl-approval-flow.svg" alt="Human-in-the-loop approval flow showing three paths: high-risk always escalates, high-confidence auto-approves, and everything else routes to human review" />
+  <img src="../../diagrams/hitl-approval-flow.svg" alt="Human-in-the-loop approval flow showing three paths: high-risk always escalates, high-confidence auto-approves, and everything else routes to human review" />
   <figcaption>Figure 5.1: Human-in-the-loop approval flow -- auto-approve vs human review paths</figcaption>
 </figure>
 
@@ -184,7 +184,7 @@ Mitigate this by calibrating thresholds against historical accuracy. If the agen
 Policy-based escalation is the most robust pattern because it does not depend on the model's self-assessment. It depends on a taxonomy of actions that humans define and maintain. The taxonomy will need updating as the agent's action space evolves, but it is explicit and auditable.
 
 <figure>
-  <img src="../diagrams/escalation-decision-tree.svg" alt="Escalation decision tree showing PROCEED, ESCALATE, and HALT outcomes based on risk tier, confidence threshold, and autonomous action count" />
+  <img src="../../diagrams/escalation-decision-tree.svg" alt="Escalation decision tree showing PROCEED, ESCALATE, and HALT outcomes based on risk tier, confidence threshold, and autonomous action count" />
   <figcaption>Figure 5.2: Escalation decision tree -- risk tier and confidence thresholds</figcaption>
 </figure>
 
@@ -193,7 +193,7 @@ Policy-based escalation is the most robust pattern because it does not depend on
 ### Uncertainty thresholds: when to ask vs when to act
 
 <figure>
-  <img src="../diagrams/risk-tier-matrix.svg" alt="Risk tier vs confidence matrix showing when to auto-approve, escalate, or halt based on the intersection of risk level and agent confidence" />
+  <img src="../../diagrams/risk-tier-matrix.svg" alt="Risk tier vs confidence matrix showing when to auto-approve, escalate, or halt based on the intersection of risk level and agent confidence" />
   <figcaption>Figure 5.3: Risk tier vs confidence matrix -- when to auto-approve vs require human review</figcaption>
 </figure>
 
@@ -222,7 +222,7 @@ The Incident Runbook Agent in `project/incident-runbook-agent/` ties these primi
 ### Architecture
 
 <figure>
-  <img src="../diagrams/incident-runbook-architecture.svg" alt="Incident Runbook Agent architecture showing signal ingestion, runbook search, remediation engine, and approval loop with audit trail" />
+  <img src="../../diagrams/incident-runbook-architecture.svg" alt="Incident Runbook Agent architecture showing signal ingestion, runbook search, remediation engine, and approval loop with audit trail" />
   <figcaption>Figure 5.4: Incident Runbook Agent architecture -- four-layer pipeline with audit trail</figcaption>
 </figure>
 
