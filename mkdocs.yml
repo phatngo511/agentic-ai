@@ -31,6 +31,7 @@ theme:
 
 plugins:
   - search
+  - tags
   - minify:
       minify_html: true
   - git-revision-date-localized:
@@ -71,6 +72,9 @@ nav:
   - Roadmap: roadmap.md
 
 extra:
+  analytics:
+    provider: google
+    property: G-4KDCBS18GZ
   social:
     - icon: fontawesome/solid/house
       link: https://sunilprakash.com
@@ -79,6 +83,9 @@ extra:
       link: https://github.com/sunilp/agentic-ai-for-serious-engineers
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/sunilprakash/
+  meta:
+    - name: "google-site-verification"
+      content: ""
 
 extra_css:
   - css/custom.css

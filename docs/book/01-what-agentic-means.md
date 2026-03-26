@@ -1,3 +1,7 @@
+---
+description: "What makes a system agentic? Precise definitions of LLM apps, workflows, tool-using systems, agents, and multi-agent systems for engineers."
+---
+
 # Chapter 1: What "Agentic" Actually Means
 
 ## Why this matters

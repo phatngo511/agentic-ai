@@ -1,3 +1,7 @@
+---
+description: "When multi-agent systems are justified and when they are complexity theater. Patterns, coordination overhead, and honest cost analysis."
+---
+
 # Chapter 4: Multi-Agent Systems Without Theater
 
 ## Why this matters

@@ -1,3 +1,7 @@
+---
+description: "How tool-using agents work: function calling, context window management, the agent loop, and writing a working agent without a framework."
+---
+
 # Chapter 2: Tools, Context, and the Agent Loop
 
 ## Why this matters

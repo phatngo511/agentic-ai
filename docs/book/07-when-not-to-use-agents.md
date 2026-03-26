@@ -1,3 +1,7 @@
+---
+description: "The most important chapter: when not to use agents. Decision framework, anti-patterns, and honest retrospective on simpler alternatives."
+---
+
 # Chapter 7: When Not to Use Agents
 
 ## Why this matters

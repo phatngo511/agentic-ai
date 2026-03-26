@@ -1,3 +1,7 @@
+---
+description: "Why you should reach for deterministic workflows before agents. Decision criteria, architecture comparison, and the engineering instinct that saves production systems."
+---
+
 # Chapter 3: Workflow First, Agent Second
 
 ## Why this matters

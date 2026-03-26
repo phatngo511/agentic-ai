@@ -1,4 +1,5 @@
 ---
+description: "A free, open engineering guide to building reliable, evaluable, and production-grade agentic AI systems. For experienced software engineers."
 hide:
   - navigation
   - toc

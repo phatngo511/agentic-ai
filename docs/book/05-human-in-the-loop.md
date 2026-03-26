@@ -1,3 +1,7 @@
+---
+description: "Human-in-the-loop as a first-class architectural decision. Approval gates, escalation policies, audit logging, and the Incident Runbook Agent."
+---
+
 # Chapter 5: Human-in-the-Loop as Architecture
 
 ## Why this matters

@@ -1,3 +1,7 @@
+---
+description: "How to evaluate and harden production agent systems. Metrics, adversarial testing, regression suites, and the difference between opinions and evidence."
+---
+
 # Chapter 6: Evaluating and Hardening Agents
 
 ## Why this matters
