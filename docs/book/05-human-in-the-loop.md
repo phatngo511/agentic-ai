@@ -57,7 +57,10 @@ class ApprovalGate:
 
 Three paths through the gate. High-risk actions always go to a human, regardless of confidence. High-confidence, lower-risk actions auto-approve. Everything else goes to a human. No ambiguity, no model interpretation, no prompt gymnastics.
 
-![Human-in-the-Loop Approval Flow](../diagrams/hitl-approval-flow.svg)
+<figure>
+  <img src="../diagrams/hitl-approval-flow.svg" alt="Human-in-the-loop approval flow showing three paths: high-risk always escalates, high-confidence auto-approves, and everything else routes to human review" />
+  <figcaption>Figure 5.1: Human-in-the-loop approval flow -- auto-approve vs human review paths</figcaption>
+</figure>
 
 The `ApprovalPolicy` is a configuration object, not embedded logic:
 
@@ -180,13 +183,19 @@ Mitigate this by calibrating thresholds against historical accuracy. If the agen
 
 Policy-based escalation is the most robust pattern because it does not depend on the model's self-assessment. It depends on a taxonomy of actions that humans define and maintain. The taxonomy will need updating as the agent's action space evolves, but it is explicit and auditable.
 
-![Escalation Decision Tree](../diagrams/escalation-decision-tree.svg)
+<figure>
+  <img src="../diagrams/escalation-decision-tree.svg" alt="Escalation decision tree showing PROCEED, ESCALATE, and HALT outcomes based on risk tier, confidence threshold, and autonomous action count" />
+  <figcaption>Figure 5.2: Escalation decision tree -- risk tier and confidence thresholds</figcaption>
+</figure>
 
 **Anomaly-based.** The action does not match any expected pattern. This is the hardest to implement because "anomalous" requires a baseline of "normal." A practical approximation: track the distribution of actions over time and escalate when the agent proposes actions in a category that represents less than 1% of historical volume. Our implementation does not include anomaly-based escalation, but the `EscalationPolicy` is extensible.
 
 ### Uncertainty thresholds: when to ask vs when to act
 
-![Risk Tier vs. Confidence Matrix](../diagrams/risk-tier-matrix.svg)
+<figure>
+  <img src="../diagrams/risk-tier-matrix.svg" alt="Risk tier vs confidence matrix showing when to auto-approve, escalate, or halt based on the intersection of risk level and agent confidence" />
+  <figcaption>Figure 5.3: Risk tier vs confidence matrix -- when to auto-approve vs require human review</figcaption>
+</figure>
 
 The threshold between autonomous action and human escalation is the single most important parameter in a HITL system. There is no universal right answer, but there are principles.
 
@@ -212,7 +221,10 @@ The Incident Runbook Agent in `project/incident-runbook-agent/` ties these primi
 
 ### Architecture
 
-![Incident Runbook Architecture](../diagrams/incident-runbook-architecture.svg)
+<figure>
+  <img src="../diagrams/incident-runbook-architecture.svg" alt="Incident Runbook Agent architecture showing signal ingestion, runbook search, remediation engine, and approval loop with audit trail" />
+  <figcaption>Figure 5.4: Incident Runbook Agent architecture -- four-layer pipeline with audit trail</figcaption>
+</figure>
 
 The architecture document (`project/incident-runbook-agent/docs/architecture.md`) describes four components in a linear pipeline:
 

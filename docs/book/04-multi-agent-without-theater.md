@@ -84,7 +84,10 @@ Multiple agents review the same output independently, and a final agent reconcil
 
 We do not use this pattern in this chapter because our task does not need it. But it appears in Chapter 9 (Compliance and Guardrails) where different policy dimensions require genuinely different evaluation criteria.
 
-![Multi-Agent Coordination Pattern](../diagrams/multi-agent-coordination.svg)
+<figure>
+  <img src="../diagrams/multi-agent-coordination.svg" alt="Multi-agent coordination pattern with orchestrator dispatching tasks to retriever, reasoner, and verifier role agents" />
+  <figcaption>Figure 4.1: Multi-agent coordination pattern -- orchestrator dispatching to role agents</figcaption>
+</figure>
 
 ## Message contracts
 
@@ -119,7 +122,10 @@ The `MessageType` enum (`TASK`, `RESULT`, `FEEDBACK`, `ESCALATION`) makes the in
 
 This is not over-engineering. It is the minimum structure needed to debug a multi-agent system in production. When verification fails, you can inspect the `VerificationResult` and see exactly which issues were flagged. When the reasoner re-runs with feedback, you can trace the `FEEDBACK` message back to the specific verification issues that triggered it.
 
-![Typed Message Contract Flow](../diagrams/message-contract-flow.svg)
+<figure>
+  <img src="../diagrams/message-contract-flow.svg" alt="Typed message contract flow showing RetrievalRequest, RetrievalResult, ReasoningRequest, VerificationRequest, and VerificationResult between agents" />
+  <figcaption>Figure 4.2: Typed message contract flow between agents</figcaption>
+</figure>
 
 ### The contract trap
 
@@ -226,7 +232,10 @@ Three design decisions deserve attention.
 
 ## The comparison
 
-![Single-Agent vs. Multi-Agent Architecture](../diagrams/single-vs-multi-agent.svg)
+<figure>
+  <img src="../diagrams/single-vs-multi-agent.svg" alt="Side-by-side comparison of single-agent architecture with bounded loop versus multi-agent architecture with orchestrator and three specialized agents" />
+  <figcaption>Figure 4.3: Single-agent vs multi-agent architecture comparison</figcaption>
+</figure>
 
 The `MultiAgentComparisonRunner` in `src/ch04_multiagent/compare.py` runs the single-agent implementation from Chapter 3 and the multi-agent implementation on the same queries:
 
@@ -297,7 +306,10 @@ Ambiguous stopping rules are a reliability hazard. If the stopping condition is 
 
 ## Cost explosion
 
-![Cost Multiplication: Single vs. Multi-Agent](../diagrams/multi-agent-cost.svg)
+<figure>
+  <img src="../diagrams/multi-agent-cost.svg" alt="Cost multiplication chart comparing token overhead for single agent versus multi-agent pipeline with verification retries" />
+  <figcaption>Figure 4.4: Cost multiplication -- single agent vs multi-agent overhead</figcaption>
+</figure>
 
 Multi-agent multiplies the agent tax introduced in Chapter 3. Where a single agent's overhead was 2-5x the workflow's cost, multi-agent adds another multiplier.
 

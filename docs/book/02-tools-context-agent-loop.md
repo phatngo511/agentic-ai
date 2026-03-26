@@ -92,7 +92,10 @@ The key design choice: `execute()` never raises exceptions for tool-level errors
 
 The Document Intelligence Agent has four tools, each in its own module under `src/ch02/tools/`. The diagram below shows the full system architecture: how the document layer feeds into the retrieval layer, which feeds into the reasoning layer, which feeds into the evaluation layer.
 
-![Document Intelligence Agent — System Architecture](../diagrams/system-architecture.svg)
+<figure>
+  <img src="../diagrams/system-architecture.svg" alt="Document Intelligence Agent system architecture showing document layer, retrieval layer, reasoning layer, and evaluation layer" />
+  <figcaption>Figure 2.1: Document Intelligence Agent system architecture</figcaption>
+</figure>
 
 **Document Loader** (`document_loader.py`): Ingests PDF, Markdown, and plain text files. Each format has its own parsing path. The tool returns raw text -- no interpretation, no summarization. Failure mode: unsupported formats raise a clear error rather than silently producing garbage.
 
@@ -176,7 +179,10 @@ Context engineering is as much about exclusion as inclusion. Here are the tradeo
 
 **Raw text, not summaries.** The pipeline passes the actual chunk text, not a summary of it. Summaries lose detail, and the model's job is to reason over the evidence, not over a lossy compression of it.
 
-![Context Assembly: Three Layers](../diagrams/context-pipeline-layers.svg)
+<figure>
+  <img src="../diagrams/context-pipeline-layers.svg" alt="Context assembly showing three layers: system prompt, evidence excerpts, and user query" />
+  <figcaption>Figure 2.2: Context assembly -- three layers from system prompt to user query</figcaption>
+</figure>
 
 ## The agent loop
 
@@ -194,7 +200,10 @@ The `DocumentAgent` class implements the observe-think-act loop:
 
 The loop continues until either the model produces a final answer (no tool calls) or the step budget is exhausted.
 
-![Observe-Think-Act Loop](../diagrams/observe-think-act.svg)
+<figure>
+  <img src="../diagrams/observe-think-act.svg" alt="The observe-think-act agent loop showing iteration from observation through model reasoning to tool execution and back" />
+  <figcaption>Figure 2.3: The observe-think-act agent loop</figcaption>
+</figure>
 
 Here is the critical section of the loop:
 

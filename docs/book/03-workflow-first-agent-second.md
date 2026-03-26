@@ -116,9 +116,15 @@ Why track state this carefully? Three reasons:
 
 3. **Resumption.** If the agent is interrupted (crash, timeout, deployment), a checkpointed `TaskState` lets you resume from the last good step rather than starting over. Chapter 4 implements this with the `Checkpoint` class.
 
-![Three Types of Agent State](../diagrams/state-management.svg)
+<figure>
+  <img src="../diagrams/state-management.svg" alt="Three types of agent state: session state spanning multiple queries, task state tracking a single execution, and working memory within a step" />
+  <figcaption>Figure 3.1: Three types of agent state -- session, task, and working memory</figcaption>
+</figure>
 
-![Workflow vs. Agent: Control Flow Comparison](../diagrams/workflow-vs-agent.svg)
+<figure>
+  <img src="../diagrams/workflow-vs-agent.svg" alt="Side-by-side comparison of workflow fixed control flow versus agent loop with model-directed decisions" />
+  <figcaption>Figure 3.2: Workflow vs agent control flow comparison</figcaption>
+</figure>
 
 ## Same task, two ways: the comparison
 
