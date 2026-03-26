@@ -34,7 +34,7 @@ The agent tax is not a reason to never build agents. It is a reason to build the
 
 The chart below shows the relative overhead each architecture imposes across latency, cost, and debuggability. Green bars represent low overhead; red bars represent high overhead. The rightmost column adds the human review time that HITL introduces on top of the compute overhead.
 
-![Agent tax comparison chart showing latency, cost, and debuggability overhead for Workflow, Single Agent, Multi-Agent, and Multi-Agent plus HITL architectures](../../diagrams/source/agent-tax-comparison.svg)
+![Agent tax comparison chart showing latency, cost, and debuggability overhead for Workflow, Single Agent, Multi-Agent, and Multi-Agent plus HITL architectures](../diagrams/agent-tax-comparison.svg)
 
 ## Alternatives that are usually sufficient
 
@@ -148,7 +148,7 @@ Can you draw the flowchart in advance?
 
 The diagram below visualizes the same decision process. Each diamond is a gate: pass it with evidence before proceeding to the next level of complexity. The HITL annotation (dashed orange) is not a separate branch -- it applies as an overlay to any architecture that touches high-risk actions.
 
-![Full-spectrum decision tree showing the architecture selection process from New AI Task through five decision gates to Workflow, Single Agent, Multi-Agent, and HITL outcomes](../../diagrams/source/full-spectrum-decision.svg)
+![Full-spectrum decision tree showing the architecture selection process from New AI Task through five decision gates to Workflow, Single Agent, Multi-Agent, and HITL outcomes](../diagrams/full-spectrum-decision.svg)
 
 This framework is deliberately conservative. It assumes the simplest architecture is the default and each step toward complexity must be justified by measured evidence. The right side of the tree is not better than the left side. It is more expensive, more complex, and harder to operate. You move right only when the left side provably cannot meet your requirements.
 
@@ -298,7 +298,7 @@ Notice the common thread: the task requires decisions that depend on intermediat
 
 The quadrant below maps task complexity against the value that autonomy adds. Most tasks cluster in the bottom-left -- they belong in a workflow. Only in the top-right, where complexity and autonomy value are both genuinely high, does the full overhead of multi-agent systems or HITL become justified.
 
-![Complexity-value quadrant showing four zones: Workflow (low complexity, low autonomy value), Single Agent (low complexity, high value), Don't Build This (high complexity, low value), and Multi-Agent or HITL (high complexity, high value)](../../diagrams/source/complexity-value-quadrant.svg)
+![Complexity-value quadrant showing four zones: Workflow (low complexity, low autonomy value), Single Agent (low complexity, high value), Don't Build This (high complexity, low value), and Multi-Agent or HITL (high complexity, high value)](../diagrams/complexity-value-quadrant.svg)
 
 ## The cost of getting it wrong in each direction
 

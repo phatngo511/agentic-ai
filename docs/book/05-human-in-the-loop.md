@@ -57,7 +57,7 @@ class ApprovalGate:
 
 Three paths through the gate. High-risk actions always go to a human, regardless of confidence. High-confidence, lower-risk actions auto-approve. Everything else goes to a human. No ambiguity, no model interpretation, no prompt gymnastics.
 
-![Human-in-the-Loop Approval Flow](../../diagrams/source/hitl-approval-flow.svg)
+![Human-in-the-Loop Approval Flow](../diagrams/hitl-approval-flow.svg)
 
 The `ApprovalPolicy` is a configuration object, not embedded logic:
 
@@ -180,13 +180,13 @@ Mitigate this by calibrating thresholds against historical accuracy. If the agen
 
 Policy-based escalation is the most robust pattern because it does not depend on the model's self-assessment. It depends on a taxonomy of actions that humans define and maintain. The taxonomy will need updating as the agent's action space evolves, but it is explicit and auditable.
 
-![Escalation Decision Tree](../../diagrams/source/escalation-decision-tree.svg)
+![Escalation Decision Tree](../diagrams/escalation-decision-tree.svg)
 
 **Anomaly-based.** The action does not match any expected pattern. This is the hardest to implement because "anomalous" requires a baseline of "normal." A practical approximation: track the distribution of actions over time and escalate when the agent proposes actions in a category that represents less than 1% of historical volume. Our implementation does not include anomaly-based escalation, but the `EscalationPolicy` is extensible.
 
 ### Uncertainty thresholds: when to ask vs when to act
 
-![Risk Tier vs. Confidence Matrix](../../diagrams/source/risk-tier-matrix.svg)
+![Risk Tier vs. Confidence Matrix](../diagrams/risk-tier-matrix.svg)
 
 The threshold between autonomous action and human escalation is the single most important parameter in a HITL system. There is no universal right answer, but there are principles.
 
@@ -212,7 +212,7 @@ The Incident Runbook Agent in `project/incident-runbook-agent/` ties these primi
 
 ### Architecture
 
-![Incident Runbook Architecture](../../diagrams/source/incident-runbook-architecture.svg)
+![Incident Runbook Architecture](../diagrams/incident-runbook-architecture.svg)
 
 The architecture document (`project/incident-runbook-agent/docs/architecture.md`) describes four components in a linear pipeline:
 

@@ -92,7 +92,7 @@ The key design choice: `execute()` never raises exceptions for tool-level errors
 
 The Document Intelligence Agent has four tools, each in its own module under `src/ch02/tools/`. The diagram below shows the full system architecture: how the document layer feeds into the retrieval layer, which feeds into the reasoning layer, which feeds into the evaluation layer.
 
-![Document Intelligence Agent — System Architecture](../../diagrams/source/system-architecture.svg)
+![Document Intelligence Agent — System Architecture](../diagrams/system-architecture.svg)
 
 **Document Loader** (`document_loader.py`): Ingests PDF, Markdown, and plain text files. Each format has its own parsing path. The tool returns raw text -- no interpretation, no summarization. Failure mode: unsupported formats raise a clear error rather than silently producing garbage.
 
@@ -176,7 +176,7 @@ Context engineering is as much about exclusion as inclusion. Here are the tradeo
 
 **Raw text, not summaries.** The pipeline passes the actual chunk text, not a summary of it. Summaries lose detail, and the model's job is to reason over the evidence, not over a lossy compression of it.
 
-![Context Assembly: Three Layers](../../diagrams/source/context-pipeline-layers.svg)
+![Context Assembly: Three Layers](../diagrams/context-pipeline-layers.svg)
 
 ## The agent loop
 
@@ -194,7 +194,7 @@ The `DocumentAgent` class implements the observe-think-act loop:
 
 The loop continues until either the model produces a final answer (no tool calls) or the step budget is exhausted.
 
-![Observe-Think-Act Loop](../../diagrams/source/observe-think-act.svg)
+![Observe-Think-Act Loop](../diagrams/observe-think-act.svg)
 
 Here is the critical section of the loop:
 

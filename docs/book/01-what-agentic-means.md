@@ -56,7 +56,7 @@ Examples: a research agent that searches, reads, searches again based on what it
 
 **Failure surface:** Everything from tool-using systems, plus: unbounded loops (the agent keeps going without converging), budget exhaustion (the agent runs out of steps before reaching an answer), compounding errors (each step's mistakes feed into the next step's context), and the fundamental unpredictability of having a probabilistic system make control-flow decisions.
 
-![Agent Anatomy](../../diagrams/source/agent-anatomy.svg)
+![Agent Anatomy](../diagrams/agent-anatomy.svg)
 
 ### 5. Multi-agent system
 
@@ -81,7 +81,7 @@ Examples: a system where a planning agent breaks down a task and delegates subta
 
 Read this table from left to right as a spectrum of increasing autonomy, increasing capability, and increasing risk. The engineering challenge is to pick the point on this spectrum that is far enough right to solve your problem and no further.
 
-![System Types Spectrum](../../diagrams/source/system-types-spectrum.svg)
+![System Types Spectrum](../diagrams/system-types-spectrum.svg)
 
 ## Bounded autonomy
 

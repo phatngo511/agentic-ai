@@ -84,7 +84,7 @@ Multiple agents review the same output independently, and a final agent reconcil
 
 We do not use this pattern in this chapter because our task does not need it. But it appears in Chapter 9 (Compliance and Guardrails) where different policy dimensions require genuinely different evaluation criteria.
 
-![Multi-Agent Coordination Pattern](../../diagrams/source/multi-agent-coordination.svg)
+![Multi-Agent Coordination Pattern](../diagrams/multi-agent-coordination.svg)
 
 ## Message contracts
 
@@ -119,7 +119,7 @@ The `MessageType` enum (`TASK`, `RESULT`, `FEEDBACK`, `ESCALATION`) makes the in
 
 This is not over-engineering. It is the minimum structure needed to debug a multi-agent system in production. When verification fails, you can inspect the `VerificationResult` and see exactly which issues were flagged. When the reasoner re-runs with feedback, you can trace the `FEEDBACK` message back to the specific verification issues that triggered it.
 
-![Typed Message Contract Flow](../../diagrams/source/message-contract-flow.svg)
+![Typed Message Contract Flow](../diagrams/message-contract-flow.svg)
 
 ### The contract trap
 
@@ -226,7 +226,7 @@ Three design decisions deserve attention.
 
 ## The comparison
 
-![Single-Agent vs. Multi-Agent Architecture](../../diagrams/source/single-vs-multi-agent.svg)
+![Single-Agent vs. Multi-Agent Architecture](../diagrams/single-vs-multi-agent.svg)
 
 The `MultiAgentComparisonRunner` in `src/ch04_multiagent/compare.py` runs the single-agent implementation from Chapter 3 and the multi-agent implementation on the same queries:
 
@@ -297,7 +297,7 @@ Ambiguous stopping rules are a reliability hazard. If the stopping condition is 
 
 ## Cost explosion
 
-![Cost Multiplication: Single vs. Multi-Agent](../../diagrams/source/multi-agent-cost.svg)
+![Cost Multiplication: Single vs. Multi-Agent](../diagrams/multi-agent-cost.svg)
 
 Multi-agent multiplies the agent tax introduced in Chapter 3. Where a single agent's overhead was 2-5x the workflow's cost, multi-agent adds another multiplier.
 
