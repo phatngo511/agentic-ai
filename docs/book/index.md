@@ -57,8 +57,8 @@ You are evaluating agentic patterns for a team or organization.
 | 1 | [What "Agentic" Actually Means](01-what-agentic-means.md) | Precise definitions, comparison table, decision map -- no code |
 | 2 | [Tools, Context, and the Agent Loop](02-tools-context-agent-loop.md) | Build a working tool-using agent from typed contracts up |
 | 3 | [Workflow First, Agent Second](03-workflow-first-agent-second.md) | Same task two ways; the most important architectural decision |
-| 4 | [Evaluating and Hardening Agents](04-evaluating-and-hardening.md) | Eval, tracing, reliability, cost, security -- making it trustworthy |
-| 5 | [When Not to Use Agents](05-when-not-to-use-agents.md) | The signature chapter: building engineering judgment |
+| 4 | [Evaluating and Hardening Agents](06-evaluating-and-hardening.md) | Eval, tracing, reliability, cost, security -- making it trustworthy |
+| 5 | [When Not to Use Agents](07-when-not-to-use-agents.md) | The signature chapter: building engineering judgment |
 
 ## The Running Example: Document Intelligence Agent
 
@@ -66,6 +66,6 @@ Every chapter uses the same project -- a Document Intelligence Agent that ingest
 
 This is not a toy example. It has four layers (document, retrieval, reasoning, evaluation), real failure modes, and two implementations of the same task (deterministic workflow and bounded agent). The project code lives in `src/` and the project documentation lives in `project/doc-intelligence-agent/`.
 
-The architecture is documented in [`project/doc-intelligence-agent/docs/architecture.md`](../project/doc-intelligence-agent/docs/architecture.md). The failure analysis is documented in [`project/doc-intelligence-agent/docs/failure-analysis.md`](../project/doc-intelligence-agent/docs/failure-analysis.md).
+The architecture and failure analysis are documented in the [Document Intelligence Agent](../projects/doc-intelligence-agent.md) project page.
 
 By the end of the book, you will have built, compared, evaluated, and hardened this system -- and you will have a clear framework for deciding whether an agent was the right choice in the first place.

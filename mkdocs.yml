@@ -1,0 +1,88 @@
+site_name: Agentic AI for Serious Engineers
+site_url: https://sunilprakash.com/agentic-ai/
+site_description: A practical field guide to building reliable, evaluable, and production-grade agent systems
+site_author: Sunil Prakash
+repo_url: https://github.com/sunilp/agentic-ai-for-serious-engineers
+repo_name: sunilp/agentic-ai-for-serious-engineers
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font: false
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+  - git-revision-date-localized:
+      enable_creation_date: true
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - meta
+
+nav:
+  - Home: index.md
+  - Principles: principles.md
+  - The Book:
+    - 1. What "Agentic" Actually Means: book/01-what-agentic-means.md
+    - 2. Tools, Context, and the Agent Loop: book/02-tools-context-agent-loop.md
+    - 3. Workflow-First, Agent-Second: book/03-workflow-first-agent-second.md
+    - 4. Multi-Agent Systems Without Theater: book/04-multi-agent-without-theater.md
+    - 5. Human-in-the-Loop as Architecture: book/05-human-in-the-loop.md
+    - 6. Evaluating and Hardening Agent Systems: book/06-evaluating-and-hardening.md
+    - 7. When Not to Use Agents: book/07-when-not-to-use-agents.md
+  - Projects:
+    - Document Intelligence Agent: projects/doc-intelligence-agent.md
+    - Incident Runbook Agent: projects/incident-runbook-agent.md
+  - Code Reference: code/reference.md
+  - Roadmap: roadmap.md
+
+extra:
+  social:
+    - icon: fontawesome/solid/house
+      link: https://sunilprakash.com
+      name: sunilprakash.com
+    - icon: fontawesome/brands/github
+      link: https://github.com/sunilp/agentic-ai-for-serious-engineers
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/sunilprakash/
+
+extra_css:
+  - css/custom.css
+
+copyright: >
+  Copyright &copy; 2026 Sunil Prakash --
+  <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
