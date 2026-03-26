@@ -1,3 +1,7 @@
+---
+description: "Core engineering principles behind the book: workflow-first design, failure-mode thinking, evaluation over vibes, and judgment over hype."
+---
+
 # Engineering Principles
 
 These principles shape every chapter, every code example, and every design decision in this book. They are not aspirational. They are constraints.

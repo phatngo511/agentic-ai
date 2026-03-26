@@ -1,3 +1,7 @@
+---
+description: "Roadmap for Agentic AI for Serious Engineers: shipped chapters, upcoming content, and planned additions."
+---
+
 # Roadmap
 
 ---
