@@ -85,17 +85,17 @@ If you are looking for a prompt engineering tutorial, a framework crash course, 
 ## Repo Structure
 
 ```
-agentic-ai-for-serious-engineers/
-├── book/                          # Field manual chapters (structured markdown)
-│   ├── index.md                   # Chapter overview and learning paths
-│   ├── 01-what-agentic-means.md
-│   ├── 02-tools-context-agent-loop.md
-│   ├── 03-workflow-first-agent-second.md
-│   ├── 04-multi-agent-without-theater.md
-│   ├── 05-human-in-the-loop.md
-│   ├── 06-evaluating-and-hardening.md
-│   └── 07-when-not-to-use-agents.md
-├── src/                          # Working examples, per-chapter
+agentic-ai/
+├── docs/                          # MkDocs Material site source
+│   └── book/                      # Field manual chapters (structured markdown)
+│       ├── 01-what-agentic-means.md
+│       ├── 02-tools-context-agent-loop.md
+│       ├── 03-workflow-first-agent-second.md
+│       ├── 04-multi-agent-without-theater.md
+│       ├── 05-human-in-the-loop.md
+│       ├── 06-evaluating-and-hardening.md
+│       └── 07-when-not-to-use-agents.md
+├── src/                           # Working examples, per-chapter
 │   ├── shared/                    # Model client, config, common types
 │   ├── ch02/                      # Tool registry, context pipeline, first agent
 │   ├── ch03/                      # Workflow vs agent comparison, state, planning
@@ -103,16 +103,13 @@ agentic-ai-for-serious-engineers/
 │   ├── ch05_hitl/                 # Approval gates, escalation, audit logging
 │   └── ch06/                      # Eval harness, traces, reliability, security
 ├── project/                       # Threaded end-to-end projects
-│   ├── doc-intelligence-agent/
-│   │   ├── evals/                 # Gold dataset, rubric, eval runner
-│   │   └── docs/                  # Architecture and failure analysis
+│   ├── doc-intelligence-agent/    # Ingestion, retrieval, citations, escalation
 │   └── incident-runbook-agent/    # Multi-agent with human approval
-├── docs/                          # MkDocs Material site source
-├── diagrams/
-│   └── source/                    # Architecture-grade SVG diagrams
 ├── tests/
 │   ├── unit/                      # Component-level tests
 │   └── integration/               # Pipeline and system tests
+├── diagrams/
+│   └── source/                    # Architecture-grade SVG diagrams
 ├── pyproject.toml                 # Dependencies (single source of truth)
 ├── Makefile                       # install, test, eval, run, compare, serve
 ├── .env.example                   # Required environment variables
@@ -150,6 +147,10 @@ Phase 1 and Phase 2 are shipped. Seven chapters, two end-to-end projects, 52+ pa
 ## Contributing
 
 Found something wrong or have a suggestion? [Open an issue](https://github.com/sunilp/agentic-ai/issues) or submit a pull request. If this book helped you build something real, consider giving it a star -- it helps others find it.
+
+## Author
+
+Written by [Sunil Prakash](https://sunilprakash.com) -- engineering leader focused on enterprise AI systems, governance, and agent architecture.
 
 ## License
 
