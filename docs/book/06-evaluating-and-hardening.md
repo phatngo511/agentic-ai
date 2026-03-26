@@ -390,4 +390,4 @@ You now have a system that you can evaluate, observe, harden, cost-manage, and s
 
 But there is a question the tools in this chapter cannot answer: should you have built this system as an agent in the first place? Evaluation tells you whether the agent works. It does not tell you whether a simpler system would work just as well. Cost profiling tells you what the agent costs. It does not tell you whether that cost is justified.
 
-Chapter 5 asks the hardest question: when should you not build an agent? It is a chapter about engineering judgment -- the skill that no framework provides and no evaluation harness measures.
+Chapter 7 asks the hardest question: when should you not build an agent? It brings together the full spectrum -- workflows, single agents, multi-agent systems, and HITL-augmented agents -- and provides a decision framework for choosing the right architecture. It is a chapter about engineering judgment -- the skill that no framework provides and no evaluation harness measures.

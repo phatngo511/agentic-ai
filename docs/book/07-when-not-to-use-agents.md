@@ -22,7 +22,7 @@ Every agent system pays a tax that simpler architectures do not. Understanding t
 
 **Testability tax.** Agent behavior is non-deterministic and path-dependent. The same query can produce different step sequences across runs. Testing requires statistical evaluation over many cases, not deterministic assertions. Your CI pipeline goes from "run tests, check pass/fail" to "run evaluation suite, check aggregate metrics against thresholds." This is harder to build, slower to run, and more nuanced to interpret.
 
-**Debuggability tax.** When a workflow produces a wrong answer, you trace one model call. When an agent produces a wrong answer, you trace N model calls, M tool calls, and the decision chain that led to each one. You need structured tracing (Chapter 4) just to make debugging feasible.
+**Debuggability tax.** When a workflow produces a wrong answer, you trace one model call. When an agent produces a wrong answer, you trace N model calls, M tool calls, and the decision chain that led to each one. You need structured tracing (Chapter 6) just to make debugging feasible.
 
 **Governance tax.** For regulated industries, you must explain what the system did and why. A workflow's explanation is trivial: "it retrieved these documents and generated this answer." An agent's explanation requires reconstructing its decision tree from traces. Auditors and compliance teams are not impressed by capability. They are reassured by simplicity.
 
@@ -94,29 +94,51 @@ In these cases, building an autonomous agent is not just unnecessary -- it is ac
 
 ## A decision framework
 
-Here is a structured approach to deciding whether a task needs an agent.
+Here is a structured approach to deciding which architecture a task needs. The framework covers the full spectrum from workflow through HITL-augmented agents, and each step is a gate that must be passed before escalating to the next level of complexity.
 
 ### Step 1: Can you draw the flowchart?
 
-If you can specify the steps before seeing the input, it is a workflow. Do not build an agent. The test is not whether the task is complex -- complex workflows with many steps are still workflows. The test is whether the steps are known in advance.
+If you can specify the steps before seeing the input, it is a workflow. Build a workflow (Chapter 3). The test is not whether the task is complex -- complex workflows with many steps are still workflows. The test is whether the steps are known in advance. Stop here if the answer is yes.
 
 ### Step 2: Does the task require multi-step reasoning with intermediate decisions?
 
-If the answer to step 1's question requires finding information and then using that information to decide what to look for next -- that is a reason for an agent. But be honest: does it really require this, or are you imagining edge cases that represent 5% of the query volume?
+If completing the task requires finding information and then using that information to decide what to look for next, that is a reason for a single agent. But be honest: does it really require this, or are you imagining edge cases that represent 5% of the query volume? If 95% of queries follow a predictable path, build a workflow with human escalation for the 5%, not an agent for the 100%.
 
 ### Step 3: Have you measured the workflow's limitations?
 
-Build the workflow first. Run it on your actual queries. Measure where it fails. If it fails on 30% of queries because single-pass retrieval is insufficient, you have data justifying an agent. If it fails on 3% of queries, consider handling those 3% with human escalation rather than building an agent for all queries.
+Build the workflow first. Run it on your actual queries. Measure where it fails. If it fails on 30% of queries because single-pass retrieval is insufficient, you have data justifying a single agent. If it fails on 3%, consider handling those with human escalation rather than building an agent for all queries. The hybrid approach from Chapter 3 -- workflow by default, agent for low-confidence cases -- is often the right answer at this step.
 
-### Step 4: Does the agent actually improve the failure cases?
+### Step 4: Does the single agent need independent verification?
 
-Build the agent. Run it on the cases where the workflow failed. If the agent recovers 80% of those failures, you have a strong case for the agent (or the hybrid approach from Chapter 3). If the agent recovers 20% of them while costing 3x more on every query, the math does not work.
+If citation accuracy, factual grounding, or adversarial scrutiny matters for your domain, test whether the single agent's errors are systematic in ways that a different reasoning posture would catch. If a separate verifier agent with a focused prompt catches errors that the single agent's self-correction does not, the multi-agent architecture from Chapter 4 may justify its overhead. But measure the verification effectiveness: what fraction of verifier rejections are genuine catches versus false positives? If the false positive rate is high, the verification is adding cost without adding value.
 
-### Step 5: Is the agent's improvement worth the agent tax?
+### Step 5: Does the task involve high-risk actions or require auditability?
 
-Multiply the agent's per-query cost by your volume. Compare against the workflow's cost. Calculate the value of the improvement. In some domains (medical, legal, financial), recovering even a small number of failures has high value. In others (content summarization, FAQ), the value of marginal improvement is low.
+If the agent takes actions with real-world consequences (executing remediation, modifying data, communicating with customers), add HITL controls from Chapter 5. The question is not whether to add human oversight -- for high-risk domains, the answer is always yes. The question is where in the pipeline the human gate belongs and how the escalation policy is calibrated. Use the three requirements: the reviewer has the information, the review is timely, and the reviewer can reject or modify.
 
-This framework is deliberately conservative. It assumes the workflow is the default and the agent must justify itself. This is the right starting point because the agent tax is real and the agent's benefits are uncertain until measured.
+### Step 6: Is the total system cost justified by the total system value?
+
+This is the aggregate check. Add up the compute cost (tokens per query times volume), the human cost (reviewer time per escalation times escalation rate), the engineering cost (building, testing, maintaining, debugging the system), and the operational cost (monitoring, incident response, compliance). Compare against the value the system produces. If a simpler architecture produces 90% of the value at 30% of the cost, the simpler architecture wins.
+
+### The decision tree, summarized
+
+```
+Can you draw the flowchart in advance?
+  Yes -> Workflow (Chapter 3)
+  No  -> Does it need multi-step adaptive reasoning?
+           No  -> Workflow + human escalation for edge cases
+           Yes -> Build single agent (Chapter 3)
+                  Does it need independent verification?
+                    No  -> Single agent is sufficient
+                    Yes -> Multi-agent with verifier (Chapter 4)
+                  Does it involve high-risk actions?
+                    No  -> Deploy with evaluation (Chapter 6)
+                    Yes -> Add HITL controls (Chapter 5)
+                           Calibrate escalation thresholds
+                           Monitor approval fatigue indicators
+```
+
+This framework is deliberately conservative. It assumes the simplest architecture is the default and each step toward complexity must be justified by measured evidence. The right side of the tree is not better than the left side. It is more expensive, more complex, and harder to operate. You move right only when the left side provably cannot meet your requirements.
 
 ## Systems that should not have been agents
 
@@ -152,31 +174,101 @@ Replacing the agent with a script that ran the searches and used a single LLM ca
 
 The lesson: before building an agent, check whether the task's core operations are already solved by existing tools. If the LLM's role is primarily formatting or summarization of results obtained by conventional means, use a workflow with a single generation step.
 
+## Multi-agent anti-patterns
+
+Chapter 4 built a multi-agent document intelligence system and ran it side by side against the single agent. The comparison was instructive, but the lessons extend beyond that specific task. There are recurring anti-patterns in multi-agent design that waste engineering effort and compute budget while adding no measurable value.
+
+### The org chart as architecture
+
+This is the most seductive anti-pattern because it feels intuitive. "We have a product team with a researcher, a writer, and an editor. Let's build a Researcher Agent, a Writer Agent, and an Editor Agent." The decomposition mirrors the human organization, which makes it easy to explain to stakeholders.
+
+But human organizations decompose tasks based on human constraints -- limited working memory, different skill sets acquired over years, the need for rest and handoffs. LLMs do not share these constraints. A single model can research, write, and edit within one context window. Splitting these into separate agents means passing partial results through serialization boundaries, duplicating context across multiple calls, and introducing coordination failures that do not exist when one model handles the full task.
+
+The test from Chapter 4 applies: could you write one system prompt that handles all the subtasks well? If the decomposition mirrors job titles rather than genuinely incompatible reasoning modes, it is org-chart thinking, not architectural thinking.
+
+### Three agents where one would suffice
+
+Chapter 4 documented this pattern in detail. A "planner" that always produces the same plan, a "worker" that executes it, and a "reviewer" that almost always approves. The pipeline makes 8-12 model calls where 3-4 would produce equivalent output.
+
+The telltale sign is stable agent behavior. If you log the planner's output across 100 queries and it produces the same decomposition structure for 90 of them, the planner is not planning -- it is performing a ritual. Replace it with a static template. If the reviewer approves 95% of outputs without modification, the reviewer is not reviewing -- it is wasting tokens. Remove it and use evaluation (Chapter 6) to catch quality issues in a batch process rather than per-request.
+
+The comparison data from Chapter 4 is unambiguous on this point. The multi-agent system's token overhead ranged from 40% to 120% more than the single agent, with quality improvements that were query-dependent and sometimes negative (the verification loop introduced its own error modes). The multi-agent system justified itself only in the narrow band where citation accuracy mattered and the single agent made attribution errors. For everything else, the single agent was more cost-effective.
+
+### Coordination overhead exceeding task complexity
+
+Every agent boundary creates coordination cost: serializing and deserializing messages, potentially duplicating context, handling timeouts and failures at each boundary, and debugging across boundaries when something goes wrong. When the coordination overhead exceeds the complexity of the underlying task, you have over-decomposed.
+
+A practical heuristic: if the inter-agent messages are longer than the useful work each agent does, the boundaries are in the wrong place. In Chapter 4, the orchestrator assembled context for the reasoner, then assembled nearly the same context for the verifier, paying for much of the same token content twice. This duplication is inherent to the multi-agent pattern. For simple tasks, the duplication dominates the useful computation.
+
+## The human-in-the-loop cost calculus
+
+Chapter 5 built the machinery for human-in-the-loop oversight: approval gates, escalation policies, and audit logs. The Incident Runbook Agent demonstrated these primitives in a production-relevant context. But HITL has its own cost structure that must be evaluated honestly, because poorly designed HITL can be worse than no human oversight at all.
+
+### When the human overhead exceeds the automation value
+
+The point of an agent is to automate decisions that would otherwise require human effort. HITL adds human effort back into the loop. If the HITL overhead approaches or exceeds the effort of just having humans do the task directly, the agent is not providing net value -- it is providing complexity.
+
+Consider a document classification agent that escalates 40% of cases to a human reviewer. The reviewer spends an average of 2 minutes per escalation. At 1,000 documents per day, the agent auto-classifies 600 and sends 400 to humans. If the human can classify a document in 3 minutes without the agent, the manual approach takes 50 person-hours per day. The agent-plus-HITL approach saves 30 hours of classification (the 600 auto-classified documents) but adds 13 hours of review (400 escalations at 2 minutes each), plus the agent's compute cost, plus the engineering cost of maintaining the approval pipeline. The net savings is 7 hours minus infrastructure costs. Whether that is worth it depends on the numbers, not on whether the architecture is "agentic."
+
+The escalation rate is the critical variable. Chapter 5's `EscalationPolicy` gives you the knobs to control it, but the knobs need calibration against the cost model, not just against accuracy.
+
+### Approval fatigue
+
+Chapter 5 covered this directly, but it is worth restating as a decision factor. When a reviewer sees 50 approval requests per hour and approves 49 of them, they stop reading. The approval step becomes reflexive rather than deliberative. The system has HITL on paper but not in practice.
+
+The fix is not more diligent reviewers. The fix is fewer, higher-quality escalations. The `auto_approve_threshold` in Chapter 5's `ApprovalPolicy` is the primary lever. If your reviewer approves 95% of escalations, the threshold is too conservative -- raise it until the approval rate drops to 70-80%, where the human is exercising genuine judgment rather than performing a ceremony.
+
+But there is a subtlety. If you raise the threshold too aggressively, you reduce escalation volume but also increase the rate of unreviewed errors. The optimal point depends on the cost of missed errors versus the cost of reviewer time. For the Incident Runbook Agent, where a missed error might mean an incorrect remediation on production infrastructure, the optimal threshold is more conservative than for a content classification agent where a missed error means a document goes into the wrong folder.
+
+### When HITL is security theater versus genuine oversight
+
+Chapter 5 identified the three requirements for genuine oversight: the reviewer has the information to evaluate the decision, the review happens within a time window where it is still actionable, and the reviewer has the authority and mechanism to reject or modify. If any one is missing, the HITL is theater.
+
+The decision framework should include a HITL theater check. Before adding an approval step, ask: who will review this, how quickly, and with what information? If the answer is "an on-call engineer who gets a Slack notification and clicks approve between other tasks," that is not oversight. If the answer is "a domain expert who reviews the agent's proposed action with full context and has a 5-minute SLA," that is genuine oversight.
+
+The audit log from Chapter 5 provides the data to distinguish theater from oversight after deployment. Track approval latency (are reviews happening in seconds, suggesting rubber-stamping, or in minutes, suggesting deliberation?), rejection rate (are reviewers ever rejecting, or just approving everything?), and modification rate (are reviewers adjusting agent proposals, indicating engaged review?). If approval latency is under 10 seconds, rejection rate is under 1%, and modification rate is zero, your HITL is theater regardless of what the architecture diagram says.
+
 ## An honest retrospective on the Document Intelligence Agent
 
-Throughout this book, we built the Document Intelligence Agent as both a workflow and a bounded agent. Here is an honest assessment of whether the agent was justified.
+Throughout this book, we built the Document Intelligence Agent in four configurations: as a deterministic workflow (Chapter 3), as a bounded single agent (Chapter 3), as a multi-agent system with retriever, reasoner, and verifier (Chapter 4), and with HITL approval gates (the patterns from Chapter 5 applied to the same task). Here is an honest assessment of the full spectrum.
 
-### Where the agent helped
+### The workflow (Chapter 3)
 
-**Ambiguous queries.** When the user's terminology did not match the documents, the agent's ability to rephrase and re-search occasionally found evidence the workflow missed. This was a real, measurable improvement on about 15-20% of our test cases.
+The workflow is a three-step pipeline: retrieve, build context, answer. One model call per query. Predictable cost, predictable latency, easy to test and debug. It handles 70-80% of queries well -- straightforward lookups where the first retrieval pass finds sufficient evidence.
 
-**Multi-part questions.** Questions that required finding two pieces of information and synthesizing them benefited from the agent's loop. The workflow could only answer the first part; the agent could sometimes answer both.
+Where it fails: ambiguous queries where the user's terminology does not match the documents, multi-part questions requiring synthesis across topics, and cases where the retrieval step returns low-quality evidence. These failures are bounded and measurable. The workflow knows when it is struggling (low relevance scores, low confidence) and can escalate.
 
-### Where the agent did not help
+### The single agent (Chapter 3)
 
-**Straightforward lookups.** For the majority of queries (roughly 70-80%), the first retrieval pass found sufficient evidence. The agent's extra steps on these queries were pure overhead -- it retrieved the same evidence, sometimes called tools unnecessarily, and produced an equivalent answer at 2-3x the cost.
+The bounded agent adds a loop: retrieve, assess, optionally re-retrieve with a refined query, then answer. 2-5 model calls per query. It recovers about 15-20% of the cases where the workflow fails, primarily through query refinement on ambiguous queries and multi-step retrieval on multi-part questions.
 
-**Questions with no answer.** When the evidence was not in the corpus, the agent spent its budget searching fruitlessly before escalating. The workflow escalated immediately (low relevance scores, low confidence). The agent was more expensive for the same outcome.
+Where it fails: budget waste on straightforward queries (the extra steps add cost without improving the answer), questions with no answer in the corpus (the agent searches fruitlessly before escalating), and decision quality degradation as the context grows noisier with each step.
 
-**Structured extraction.** When the task was to extract specific fields from a document, the agent's adaptive reasoning did not help. The extraction was a single-step operation. The agent loop added nothing.
+### The multi-agent system (Chapter 4)
 
-### The honest verdict
+The retriever-reasoner-verifier pipeline adds independent verification. 2-6 model calls per query depending on verification retries. It catches citation errors that the single agent misses, because the verifier scrutinizes the answer from a different prompt and context window.
 
-For this specific task and document corpus, the hybrid approach from Chapter 3 is the right architecture: workflow by default, agent escalation for the cases where the workflow's confidence is low. This captures the agent's value on hard queries without paying the agent tax on easy ones.
+Where it fails: token duplication across agents (the reasoner and verifier both receive the citations), verification false positives that trigger unnecessary retries, coordination complexity that makes debugging harder (blame diffusion across three agents), and cost overhead of 40-120% over the single agent regardless of whether the verification adds value for a given query.
 
-If the query distribution were different -- if most queries were ambiguous, if the documents were poorly organized, if the task required deep multi-step reasoning -- the balance might tip differently. The point is not that agents are wrong. The point is that the decision should be driven by measurement, not by default.
+### With HITL (Chapter 5 patterns)
 
-And here is the most important takeaway: the workflow was built first. The agent was built second, as an improvement on measured limitations of the workflow. This sequence -- simple first, complex only when justified -- is not just good engineering. It is the only way to know whether the complexity is justified.
+Adding approval gates to any of the above architectures introduces human judgment at decision points. The Incident Runbook Agent is the clearest example: the agent proposes, the escalation policy decides whether a human should review, the approval gate routes to a reviewer, and the audit log records everything.
+
+Where it helps: high-risk actions where the cost of a wrong decision exceeds the cost of human review latency, regulatory domains where a decision trail is required, and early deployment where trust in the agent has not been established. Where it hurts: routine decisions where the human adds no value (approval fatigue), time-sensitive operations where the human review latency exceeds the response window, and when the reviewer lacks the context or expertise to make a better decision than the agent.
+
+### Which approach wins for this task?
+
+The honest answer is: it depends on the deployment context, and no single architecture dominates.
+
+For a general-purpose document QA system with diverse queries: the **hybrid approach from Chapter 3** -- workflow by default, single-agent escalation for low-confidence cases. This captures 90% of the value at the lowest cost.
+
+For a system where citation accuracy is critical (legal, medical, compliance): the **multi-agent system with verification** from Chapter 4, accepting the higher cost as the price of independent scrutiny.
+
+For a system operating in a regulated environment or handling high-stakes decisions: the **HITL-augmented agent** from Chapter 5, with the specific architecture (workflow, single-agent, or multi-agent) chosen based on the quality requirements and the escalation policy calibrated based on observed error rates.
+
+For a system with predictable, well-structured queries: the **workflow alone**. No agent, no multi-agent, no HITL. The simplest architecture that meets the quality bar is the right one.
+
+The progression through this book was not a march toward the "best" architecture. It was an expansion of options, each with a different cost-quality tradeoff. The skill is not knowing the most complex option. It is knowing which option fits the constraints you actually have.
 
 ## When autonomy genuinely adds value
 
@@ -223,10 +315,10 @@ The asymmetry is important. Building an agent when you need a workflow costs you
 
 ## Closing
 
-This book started with a taxonomy and ends with a judgment call. The five chapters form a progression: understand the options, build the components, compare the architectures, harden the system, and decide when to use each approach.
+This book started with a taxonomy and ends with a judgment call. The seven chapters form a progression: understand what agentic means (Chapter 1), build the components (Chapter 2), compare workflow versus agent (Chapter 3), push into multi-agent territory (Chapter 4), add human oversight (Chapter 5), harden and evaluate the system (Chapter 6), and decide when to use each approach (this chapter).
 
-The Document Intelligence Agent was the vehicle for this progression. We built it as a workflow. We built it as an agent. We evaluated both. We hardened both. And we concluded that for this task, the right answer is mostly the workflow, with the agent as an escalation path for the cases the workflow cannot handle.
+The Document Intelligence Agent was the vehicle for this progression. We built it as a workflow. We built it as a bounded agent. We built it as a multi-agent system with independent verification. We wired in approval gates and escalation policies. We evaluated all of them. And we concluded that for this task, the right answer depends on the deployment context -- not on which architecture is most impressive, but on which one fits the constraints you actually have.
 
-Your task will be different. Your documents will be different. Your query distribution will be different. The specific answer will be different. But the process -- build simple, measure, add complexity only when justified, measure again -- is universal.
+Your task will be different. Your documents will be different. Your query distribution will be different. Your risk tolerance will be different. The specific answer will be different. But the process -- build simple, measure, add complexity only when justified, measure again -- is universal.
 
-The engineers who build the most durable, trustworthy AI systems will not be the ones who build the most sophisticated agents. They will be the ones who know when a workflow is enough and when an agent is worth the cost. That judgment -- earned through building, measuring, and comparing -- is what separates serious engineering from impressive demos.
+The engineers who build the most durable, trustworthy AI systems will not be the ones who build the most sophisticated agents. They will be the ones who know when a workflow is enough, when an agent earns its overhead, when multi-agent coordination adds genuine value, and when human oversight is essential rather than ceremonial. That judgment -- earned through building, measuring, and comparing -- is what separates serious engineering from impressive demos.
