@@ -9,15 +9,22 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 # Add incident runbook agent src
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "project" / "incident-runbook-agent" / "src"))
+sys.path.insert(
+    0, str(Path(__file__).parent.parent.parent / "project" / "incident-runbook-agent" / "src")
+)
 
-from src.ch05_hitl.approval import ApprovalDecision, ApprovalGate, ApprovalPolicy, MockApprovalProvider
-from src.ch05_hitl.escalation import EscalationPolicy
-from src.ch05_hitl.audit import AuditLog
-
-from signals import Alert, Severity, generate_incidents
-from runbook_search import RunbookIndex, get_default_runbooks
 from agent import IncidentRunbookAgent
+from runbook_search import RunbookIndex, get_default_runbooks
+from signals import Alert, Severity
+
+from src.ch05_hitl.approval import (
+    ApprovalDecision,
+    ApprovalGate,
+    ApprovalPolicy,
+    MockApprovalProvider,
+)
+from src.ch05_hitl.audit import AuditLog
+from src.ch05_hitl.escalation import EscalationPolicy
 
 
 @pytest.mark.asyncio
@@ -34,11 +41,18 @@ async def test_agent_matches_runbook_and_logs_audit():
     audit = AuditLog()
 
     agent = IncidentRunbookAgent(
-        runbook_index=index, approval_gate=gate,
-        escalation_policy=EscalationPolicy(), audit_log=audit, dry_run=True,
+        runbook_index=index,
+        approval_gate=gate,
+        escalation_policy=EscalationPolicy(),
+        audit_log=audit,
+        dry_run=True,
     )
 
-    alert = Alert(severity=Severity.CRITICAL, source="test", message="CPU usage above 95% on api-server-01 for 10 minutes")
+    alert = Alert(
+        severity=Severity.CRITICAL,
+        source="test",
+        message="CPU usage above 95% on api-server-01 for 10 minutes",
+    )
     response = await agent.process_alert(alert)
 
     assert response.runbook_matched != "none"
@@ -60,11 +74,16 @@ async def test_agent_handles_no_matching_runbook():
     audit = AuditLog()
 
     agent = IncidentRunbookAgent(
-        runbook_index=index, approval_gate=gate,
-        escalation_policy=EscalationPolicy(), audit_log=audit, dry_run=True,
+        runbook_index=index,
+        approval_gate=gate,
+        escalation_policy=EscalationPolicy(),
+        audit_log=audit,
+        dry_run=True,
     )
 
-    alert = Alert(severity=Severity.ERROR, source="test", message="Unknown failure in unknown service")
+    alert = Alert(
+        severity=Severity.ERROR, source="test", message="Unknown failure in unknown service"
+    )
     response = await agent.process_alert(alert)
 
     assert response.runbook_matched == "none"
@@ -86,11 +105,16 @@ async def test_agent_rejects_when_approval_denied():
     audit = AuditLog()
 
     agent = IncidentRunbookAgent(
-        runbook_index=index, approval_gate=gate,
-        escalation_policy=EscalationPolicy(), audit_log=audit, dry_run=True,
+        runbook_index=index,
+        approval_gate=gate,
+        escalation_policy=EscalationPolicy(),
+        audit_log=audit,
+        dry_run=True,
     )
 
-    alert = Alert(severity=Severity.CRITICAL, source="test", message="Memory at 98%, OOM killer active")
+    alert = Alert(
+        severity=Severity.CRITICAL, source="test", message="Memory at 98%, OOM killer active"
+    )
     response = await agent.process_alert(alert)
 
     assert response.approval_decision == "rejected"

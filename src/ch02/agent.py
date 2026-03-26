@@ -61,15 +61,19 @@ class DocumentAgent:
         while response.tool_calls and steps < self._max_steps:
             for tc in response.tool_calls:
                 result = await self._registry.execute(tc.name, tc.arguments, tc.id)
-                messages.append(Message(
-                    role=Role.ASSISTANT,
-                    content=f"Calling tool: {tc.name}",
-                ))
-                messages.append(Message(
-                    role=Role.TOOL,
-                    content=result.content if result.success else f"Error: {result.error}",
-                    tool_call_id=tc.id,
-                ))
+                messages.append(
+                    Message(
+                        role=Role.ASSISTANT,
+                        content=f"Calling tool: {tc.name}",
+                    )
+                )
+                messages.append(
+                    Message(
+                        role=Role.TOOL,
+                        content=result.content if result.success else f"Error: {result.error}",
+                        tool_call_id=tc.id,
+                    )
+                )
 
             request = CompletionRequest(messages=messages, tools=tools if tools else None)
             response = await self._client.complete(request)
@@ -85,7 +89,9 @@ class DocumentAgent:
             citations=citations,
             confidence=confidence,
             escalated=confidence < 0.3,
-            escalation_reason="Low confidence -- insufficient evidence" if confidence < 0.3 else None,
+            escalation_reason="Low confidence -- insufficient evidence"
+            if confidence < 0.3
+            else None,
             steps_taken=steps,
             token_usage=total_usage,
             latency_ms=elapsed,

@@ -27,7 +27,6 @@ from src.shared.types import (
     TokenUsage,
     ToolCall,
     ToolSchema,
-    ToolParameter,
 )
 
 
@@ -81,11 +80,13 @@ class OpenAIClient(ModelClient):
         tool_calls = []
         if message.get("tool_calls"):
             for tc in message["tool_calls"]:
-                tool_calls.append(ToolCall(
-                    id=tc["id"],
-                    name=tc["function"]["name"],
-                    arguments=json.loads(tc["function"]["arguments"]),
-                ))
+                tool_calls.append(
+                    ToolCall(
+                        id=tc["id"],
+                        name=tc["function"]["name"],
+                        arguments=json.loads(tc["function"]["arguments"]),
+                    )
+                )
 
         return CompletionResponse(
             content=message.get("content"),
@@ -149,11 +150,13 @@ class AnthropicClient(ModelClient):
             if block["type"] == "text":
                 content = block["text"]
             elif block["type"] == "tool_use":
-                tool_calls.append(ToolCall(
-                    id=block["id"],
-                    name=block["name"],
-                    arguments=block["input"],
-                ))
+                tool_calls.append(
+                    ToolCall(
+                        id=block["id"],
+                        name=block["name"],
+                        arguments=block["input"],
+                    )
+                )
 
         usage = data.get("usage", {})
         return CompletionResponse(
@@ -213,6 +216,7 @@ def create_client(
 
 # --- Format converters (internal) ---
 
+
 def _to_openai_message(msg: Message) -> dict[str, Any]:
     d: dict[str, Any] = {"role": msg.role.value, "content": msg.content}
     if msg.name:
@@ -252,7 +256,9 @@ def _to_anthropic_message(msg: Message) -> dict[str, Any]:
     if msg.role == Role.TOOL:
         return {
             "role": "user",
-            "content": [{"type": "tool_result", "tool_use_id": msg.tool_call_id, "content": msg.content}],
+            "content": [
+                {"type": "tool_result", "tool_use_id": msg.tool_call_id, "content": msg.content}
+            ],
         }
     return {"role": role, "content": msg.content}
 

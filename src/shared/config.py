@@ -17,6 +17,7 @@ load_dotenv()
 
 class ModelConfig(BaseModel):
     """Configuration for the model client."""
+
     provider: str = os.getenv("MODEL_PROVIDER", "openai")
     api_key: str = os.getenv("OPENAI_API_KEY", "") or os.getenv("ANTHROPIC_API_KEY", "")
     model_name: str = os.getenv("MODEL_NAME", "gpt-4o")
@@ -28,6 +29,7 @@ class ModelConfig(BaseModel):
 
 class EvalConfig(BaseModel):
     """Configuration for evaluation runs."""
+
     judge_model: str = os.getenv("EVAL_JUDGE_MODEL", "gpt-4o")
     dataset_path: Path = Path("project/doc-intelligence-agent/evals/dataset.jsonl")
     rubric_path: Path = Path("project/doc-intelligence-agent/evals/rubric.yaml")

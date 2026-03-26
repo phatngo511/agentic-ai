@@ -43,8 +43,7 @@ class DocumentWorkflow:
         elapsed = (time.monotonic() - start) * 1000
 
         avg_relevance = (
-            sum(c.relevance_score for c in citations) / len(citations)
-            if citations else 0.0
+            sum(c.relevance_score for c in citations) / len(citations) if citations else 0.0
         )
 
         return AgentResponse(

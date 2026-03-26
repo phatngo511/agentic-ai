@@ -20,11 +20,12 @@ Failure modes this design addresses:
 from __future__ import annotations
 
 import time
-from typing import Any, Callable, Awaitable
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 import structlog
 
-from src.shared.types import ToolSchema, ToolResult
+from src.shared.types import ToolResult, ToolSchema
 
 logger = structlog.get_logger()
 
@@ -83,7 +84,7 @@ class ToolRegistry:
                 content="",
                 success=False,
                 error=f"Missing required arguments: {missing}. "
-                      f"Expected: {[p.name for p in tool.schema.parameters]}",
+                f"Expected: {[p.name for p in tool.schema.parameters]}",
             )
             self._log_execution(name, arguments, result, 0.0)
             return result

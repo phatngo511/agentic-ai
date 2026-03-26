@@ -7,15 +7,17 @@ from __future__ import annotations
 
 import json
 import time
-from enum import Enum
+from collections.abc import Awaitable, Callable
+from enum import StrEnum
 from pathlib import Path
-from typing import Any, Callable, Awaitable
+from typing import Any
 
 from pydantic import BaseModel, Field
 
 
 class EvalCase(BaseModel):
     """A single evaluation test case."""
+
     id: str
     query: str
     expected_answer: str
@@ -27,6 +29,7 @@ class EvalCase(BaseModel):
 
 class RubricCriterion(BaseModel):
     """A single scoring criterion."""
+
     name: str
     description: str
     weight: float = 1.0
@@ -34,12 +37,14 @@ class RubricCriterion(BaseModel):
 
 class Rubric(BaseModel):
     """Scoring rubric for evaluation."""
+
     criteria: list[RubricCriterion]
     pass_threshold: float = 0.7
 
 
-class FailureCategory(str, Enum):
+class FailureCategory(StrEnum):
     """Categories for why an answer failed."""
+
     INCORRECT = "incorrect"
     UNSUPPORTED = "unsupported"
     INCOMPLETE = "incomplete"
@@ -52,6 +57,7 @@ class FailureCategory(str, Enum):
 
 class EvalResult(BaseModel):
     """Result of evaluating a single test case."""
+
     case_id: str
     passed: bool
     score: float
@@ -65,6 +71,7 @@ class EvalResult(BaseModel):
 
 class EvalReport(BaseModel):
     """Aggregate report from an evaluation run."""
+
     run_id: str
     timestamp: float
     total_cases: int
@@ -80,29 +87,33 @@ class EvalReport(BaseModel):
     def to_markdown(self) -> str:
         lines = [
             f"# Evaluation Report: {self.run_id}",
-            f"",
+            "",
             f"**Date:** {time.strftime('%Y-%m-%d %H:%M', time.localtime(self.timestamp))}",
             f"**Cases:** {self.total_cases} | **Passed:** {self.passed} | **Failed:** {self.failed}",
             f"**Pass rate:** {self.pass_rate:.1%}",
             f"**Avg score:** {self.avg_score:.2f}",
             f"**Avg latency:** {self.avg_latency_ms:.0f}ms",
             f"**Total tokens:** {self.total_tokens}",
-            f"",
-            f"## Failure Distribution",
-            f"",
+            "",
+            "## Failure Distribution",
+            "",
         ]
         for cat, count in sorted(self.failure_distribution.items(), key=lambda x: -x[1]):
             lines.append(f"- {cat}: {count}")
-        lines.extend([
-            f"",
-            f"## Results Detail",
-            f"",
-            f"| Case | Score | Pass | Failures | Latency |",
-            f"|------|-------|------|----------|---------|",
-        ])
+        lines.extend(
+            [
+                "",
+                "## Results Detail",
+                "",
+                "| Case | Score | Pass | Failures | Latency |",
+                "|------|-------|------|----------|---------|",
+            ]
+        )
         for r in self.results:
             failures = ", ".join(f.value for f in r.failure_categories) or "none"
-            lines.append(f"| {r.case_id} | {r.score:.2f} | {'Y' if r.passed else 'N'} | {failures} | {r.latency_ms:.0f}ms |")
+            lines.append(
+                f"| {r.case_id} | {r.score:.2f} | {'Y' if r.passed else 'N'} | {failures} | {r.latency_ms:.0f}ms |"
+            )
         return "\n".join(lines)
 
 
@@ -129,32 +140,37 @@ class EvalRunner:
                 elapsed = (time.monotonic() - start) * 1000
                 scores = self._score(case, response)
                 weighted_score = sum(
-                    scores.get(c.name, 0.0) * c.weight
-                    for c in self.rubric.criteria
+                    scores.get(c.name, 0.0) * c.weight for c in self.rubric.criteria
                 )
                 passed = weighted_score >= self.rubric.pass_threshold
                 failures = self._categorize_failures(case, response, scores)
-                results.append(EvalResult(
-                    case_id=case.id,
-                    passed=passed,
-                    score=weighted_score,
-                    scores=scores,
-                    answer=getattr(response, "answer", str(response)),
-                    failure_categories=failures,
-                    latency_ms=elapsed,
-                    tokens_used=getattr(getattr(response, "token_usage", None), "total_tokens", 0),
-                ))
+                results.append(
+                    EvalResult(
+                        case_id=case.id,
+                        passed=passed,
+                        score=weighted_score,
+                        scores=scores,
+                        answer=getattr(response, "answer", str(response)),
+                        failure_categories=failures,
+                        latency_ms=elapsed,
+                        tokens_used=getattr(
+                            getattr(response, "token_usage", None), "total_tokens", 0
+                        ),
+                    )
+                )
             except Exception as e:
                 elapsed = (time.monotonic() - start) * 1000
-                results.append(EvalResult(
-                    case_id=case.id,
-                    passed=False,
-                    score=0.0,
-                    answer=f"ERROR: {e}",
-                    failure_categories=[FailureCategory.INCORRECT],
-                    latency_ms=elapsed,
-                    notes=str(e),
-                ))
+                results.append(
+                    EvalResult(
+                        case_id=case.id,
+                        passed=False,
+                        score=0.0,
+                        answer=f"ERROR: {e}",
+                        failure_categories=[FailureCategory.INCORRECT],
+                        latency_ms=elapsed,
+                        notes=str(e),
+                    )
+                )
 
         passed_count = sum(1 for r in results if r.passed)
         failure_dist: dict[str, int] = {}
@@ -237,6 +253,7 @@ def load_cases(path: str | Path) -> list[EvalCase]:
 
 def load_rubric(path: str | Path) -> Rubric:
     import yaml
+
     with open(path) as f:
         data = yaml.safe_load(f)
     criteria = [RubricCriterion(**c) for c in data["criteria"]]

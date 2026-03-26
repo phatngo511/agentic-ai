@@ -6,6 +6,8 @@
 planning/
 docs/superpowers/
 .local/
+.cache/
+.superpowers/
 __pycache__/
 *.pyc
 .env

@@ -3,7 +3,7 @@
 import pytest
 
 from src.ch02.tool_registry import ToolRegistry
-from src.shared.types import ToolSchema, ToolParameter, ToolResult, SideEffect
+from src.shared.types import SideEffect, ToolParameter, ToolSchema
 
 
 @pytest.fixture

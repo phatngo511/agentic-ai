@@ -1,13 +1,10 @@
 """Tests for multi-agent message contracts."""
 
 from src.ch04_multiagent.contracts import (
-    AgentMessage,
     MessageType,
+    ReasoningRequest,
     RetrievalRequest,
     RetrievalResult,
-    ReasoningRequest,
-    ReasoningResult,
-    VerificationRequest,
     VerificationResult,
 )
 from src.shared.types import Citation

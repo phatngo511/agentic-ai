@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.shared.types import ToolSchema, ToolParameter, SideEffect
-
+from src.shared.types import SideEffect, ToolParameter, ToolSchema
 
 SCHEMA = ToolSchema(
     name="load_document",

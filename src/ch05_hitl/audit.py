@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field
 
 class AuditEntry(BaseModel):
     """A single audit log entry. Immutable after creation."""
+
     entry_id: str = Field(default_factory=lambda: str(uuid.uuid4())[:12])
     timestamp: float = Field(default_factory=time.time)
     actor: str  # "agent", "human", "system"

@@ -32,7 +32,9 @@ def test_to_json():
 
 def test_to_markdown():
     log = AuditLog()
-    log.record(actor="agent", action="triage", decision="escalate", confidence=0.3, risk_level="high")
+    log.record(
+        actor="agent", action="triage", decision="escalate", confidence=0.3, risk_level="high"
+    )
     md = log.to_markdown()
     assert "| agent |" in md
     assert "triage" in md

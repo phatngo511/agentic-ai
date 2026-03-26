@@ -25,7 +25,6 @@ from src.shared.types import (
     TokenUsage,
 )
 
-
 AGENT_SYSTEM_PROMPT = """You are a document intelligence agent with bounded autonomy.
 
 Your goal: answer the user's question using the provided evidence.
@@ -89,19 +88,24 @@ class BoundedDocumentAgent:
                     result = await self._registry.execute(tc.name, tc.arguments, tc.id)
                     task.add_step(f"tool:{tc.name}", tc.arguments, result.content[:200])
                     messages.append(Message(role=Role.ASSISTANT, content=f"Calling {tc.name}"))
-                    messages.append(Message(
-                        role=Role.TOOL,
-                        content=result.content if result.success else f"Error: {result.error}",
-                        tool_call_id=tc.id,
-                    ))
+                    messages.append(
+                        Message(
+                            role=Role.TOOL,
+                            content=result.content if result.success else f"Error: {result.error}",
+                            tool_call_id=tc.id,
+                        )
+                    )
                 continue
 
             if response.content:
                 avg_relevance = (
-                    sum(c.relevance_score for c in citations) / len(citations)
-                    if citations else 0.0
+                    sum(c.relevance_score for c in citations) / len(citations) if citations else 0.0
                 )
-                confidence = min(0.95, avg_relevance) if "[Source:" in (response.content or "") else avg_relevance * 0.7
+                confidence = (
+                    min(0.95, avg_relevance)
+                    if "[Source:" in (response.content or "")
+                    else avg_relevance * 0.7
+                )
                 task.mark_complete(response.content, confidence)
 
         elapsed = (time.monotonic() - start) * 1000
@@ -109,7 +113,7 @@ class BoundedDocumentAgent:
         if task.is_over_budget and not task.is_complete:
             return AgentResponse(
                 answer=f"I was unable to answer confidently within my step budget ({self._max_steps} steps). "
-                       f"Here is what I found: {task.steps[-1].get('result', 'No results gathered.')}",
+                f"Here is what I found: {task.steps[-1].get('result', 'No results gathered.')}",
                 citations=citations,
                 confidence=0.2,
                 escalated=True,
@@ -126,7 +130,8 @@ class BoundedDocumentAgent:
             escalated=task.confidence < self._confidence_threshold,
             escalation_reason=(
                 f"Confidence {task.confidence:.2f} below threshold {self._confidence_threshold}"
-                if task.confidence < self._confidence_threshold else None
+                if task.confidence < self._confidence_threshold
+                else None
             ),
             steps_taken=len(task.steps),
             token_usage=total_usage,

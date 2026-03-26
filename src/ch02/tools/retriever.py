@@ -6,15 +6,16 @@ import chromadb
 from chromadb.config import Settings as ChromaSettings
 
 from src.ch02.tools.chunker import Chunk
-from src.shared.types import Citation, ToolSchema, ToolParameter, SideEffect
-
+from src.shared.types import Citation, SideEffect, ToolParameter, ToolSchema
 
 SCHEMA = ToolSchema(
     name="retrieve",
     description="Search indexed documents for chunks relevant to a query.",
     parameters=[
         ToolParameter(name="query", type="string", description="The search query"),
-        ToolParameter(name="top_k", type="integer", description="Number of results to return", required=False),
+        ToolParameter(
+            name="top_k", type="integer", description="Number of results to return", required=False
+        ),
     ],
     side_effect=SideEffect.READ,
 )
@@ -37,7 +38,10 @@ class DocumentIndex:
         self._collection.add(
             ids=[c.chunk_id for c in chunks],
             documents=[c.text for c in chunks],
-            metadatas=[{"source": c.source, "start_char": c.start_char, "end_char": c.end_char} for c in chunks],
+            metadatas=[
+                {"source": c.source, "start_char": c.start_char, "end_char": c.end_char}
+                for c in chunks
+            ],
         )
 
     def retrieve(self, query: str, top_k: int = 5) -> list[Citation]:
@@ -51,12 +55,14 @@ class DocumentIndex:
         for i, doc in enumerate(results["documents"][0]):
             meta = results["metadatas"][0][i]
             distance = results["distances"][0][i] if results.get("distances") else 0.0
-            citations.append(Citation(
-                source=meta["source"],
-                chunk_id=results["ids"][0][i],
-                text=doc,
-                relevance_score=1.0 - distance,
-            ))
+            citations.append(
+                Citation(
+                    source=meta["source"],
+                    chunk_id=results["ids"][0][i],
+                    text=doc,
+                    relevance_score=1.0 - distance,
+                )
+            )
 
         return citations
 

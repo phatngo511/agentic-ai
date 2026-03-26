@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import sys
 from pathlib import Path
 
 from src.ch02.agent import DocumentAgent
@@ -80,7 +79,9 @@ def _print_response(response) -> None:
         print(f"\nSources ({len(response.citations)}):")
         for c in response.citations[:3]:
             print(f"  - {c.source} (relevance: {c.relevance_score:.2f})")
-    print(f"\nSteps: {response.steps_taken} | Tokens: {response.token_usage.total_tokens} | Latency: {response.latency_ms:.0f}ms")
+    print(
+        f"\nSteps: {response.steps_taken} | Tokens: {response.token_usage.total_tokens} | Latency: {response.latency_ms:.0f}ms"
+    )
 
 
 if __name__ == "__main__":

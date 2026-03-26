@@ -18,9 +18,13 @@ async def test_workflow_single_model_call():
     )
     index.add_chunks(chunks)
 
-    mock = MockClient(responses=[
-        CompletionResponse(content="Python was created by Guido van Rossum. [Source: python.txt]"),
-    ])
+    mock = MockClient(
+        responses=[
+            CompletionResponse(
+                content="Python was created by Guido van Rossum. [Source: python.txt]"
+            ),
+        ]
+    )
 
     workflow = DocumentWorkflow(client=mock, index=index)
     response = await workflow.run("Who created Python?")

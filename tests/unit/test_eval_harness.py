@@ -2,16 +2,24 @@
 
 import pytest
 
-from src.ch06.eval_harness import EvalCase, EvalResult, EvalRunner, Rubric, RubricCriterion
+from src.ch06.eval_harness import EvalCase, EvalResult, Rubric, RubricCriterion
 
 
 @pytest.fixture
 def sample_rubric() -> Rubric:
     return Rubric(
         criteria=[
-            RubricCriterion(name="correctness", description="Is the answer factually correct?", weight=0.4),
-            RubricCriterion(name="grounded", description="Does the answer cite sources?", weight=0.3),
-            RubricCriterion(name="completeness", description="Does the answer address the full question?", weight=0.3),
+            RubricCriterion(
+                name="correctness", description="Is the answer factually correct?", weight=0.4
+            ),
+            RubricCriterion(
+                name="grounded", description="Does the answer cite sources?", weight=0.3
+            ),
+            RubricCriterion(
+                name="completeness",
+                description="Does the answer address the full question?",
+                weight=0.3,
+            ),
         ]
     )
 

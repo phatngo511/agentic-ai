@@ -6,25 +6,26 @@ They are provider-neutral -- no OpenAI or Anthropic types leak through.
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, Field
 
 
-class Role(str, Enum):
+class Role(StrEnum):
     SYSTEM = "system"
     USER = "user"
     ASSISTANT = "assistant"
     TOOL = "tool"
 
 
-class SideEffect(str, Enum):
+class SideEffect(StrEnum):
     """Classifies what a tool does to the world.
 
     This matters for permission scoping and audit logging.
     A read tool can be retried freely. A write tool needs more care.
     """
+
     READ = "read"
     WRITE = "write"
     DELETE = "delete"
@@ -32,6 +33,7 @@ class SideEffect(str, Enum):
 
 class Message(BaseModel):
     """A single message in a conversation."""
+
     role: Role
     content: str
     name: str | None = None
@@ -40,6 +42,7 @@ class Message(BaseModel):
 
 class ToolParameter(BaseModel):
     """A single parameter in a tool schema."""
+
     name: str
     type: str
     description: str
@@ -49,6 +52,7 @@ class ToolParameter(BaseModel):
 
 class ToolSchema(BaseModel):
     """The contract for a tool -- what it does, what it accepts, what it returns."""
+
     name: str
     description: str
     parameters: list[ToolParameter] = Field(default_factory=list)
@@ -58,6 +62,7 @@ class ToolSchema(BaseModel):
 
 class ToolCall(BaseModel):
     """A request from the model to execute a tool."""
+
     id: str
     name: str
     arguments: dict[str, Any]
@@ -65,6 +70,7 @@ class ToolCall(BaseModel):
 
 class ToolResult(BaseModel):
     """The result of executing a tool."""
+
     tool_call_id: str
     name: str
     content: str
@@ -74,6 +80,7 @@ class ToolResult(BaseModel):
 
 class CompletionRequest(BaseModel):
     """A request to a language model."""
+
     messages: list[Message]
     tools: list[ToolSchema] | None = None
     temperature: float = 0.0
@@ -83,6 +90,7 @@ class CompletionRequest(BaseModel):
 
 class TokenUsage(BaseModel):
     """Token accounting for a single completion."""
+
     prompt_tokens: int = 0
     completion_tokens: int = 0
     total_tokens: int = 0
@@ -90,6 +98,7 @@ class TokenUsage(BaseModel):
 
 class CompletionResponse(BaseModel):
     """A response from a language model."""
+
     content: str | None = None
     tool_calls: list[ToolCall] = Field(default_factory=list)
     usage: TokenUsage | None = None
@@ -99,6 +108,7 @@ class CompletionResponse(BaseModel):
 
 class Citation(BaseModel):
     """A reference to a specific source passage."""
+
     source: str
     page: int | None = None
     chunk_id: str | None = None
@@ -108,6 +118,7 @@ class Citation(BaseModel):
 
 class AgentResponse(BaseModel):
     """The final output of an agent run."""
+
     answer: str
     citations: list[Citation] = Field(default_factory=list)
     confidence: float = Field(ge=0.0, le=1.0)

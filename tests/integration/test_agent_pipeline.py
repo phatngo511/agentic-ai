@@ -3,7 +3,6 @@
 import pytest
 
 from src.ch02.agent import DocumentAgent
-from src.ch02.context import ContextPipeline
 from src.ch02.tool_registry import ToolRegistry
 from src.ch02.tools.chunker import chunk_document
 from src.ch02.tools.retriever import DocumentIndex
@@ -20,12 +19,14 @@ async def test_agent_returns_answer_with_citations():
     )
     index.add_chunks(chunks)
 
-    mock = MockClient(responses=[
-        CompletionResponse(
-            content="The capital of France is Paris. [Source: geography.txt]",
-            model="mock",
-        ),
-    ])
+    mock = MockClient(
+        responses=[
+            CompletionResponse(
+                content="The capital of France is Paris. [Source: geography.txt]",
+                model="mock",
+            ),
+        ]
+    )
 
     agent = DocumentAgent(
         client=mock,
@@ -46,12 +47,14 @@ async def test_agent_returns_answer_with_citations():
 async def test_agent_escalates_on_no_evidence():
     index = DocumentIndex(collection_name="test_empty")
 
-    mock = MockClient(responses=[
-        CompletionResponse(
-            content="I don't have enough information to answer this question.",
-            model="mock",
-        ),
-    ])
+    mock = MockClient(
+        responses=[
+            CompletionResponse(
+                content="I don't have enough information to answer this question.",
+                model="mock",
+            ),
+        ]
+    )
 
     agent = DocumentAgent(
         client=mock,

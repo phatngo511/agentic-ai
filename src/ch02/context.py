@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from src.shared.types import Citation, Message, Role
 
-
 SYSTEM_PROMPT = """You are a document intelligence assistant. Your job is to answer questions
 based strictly on the provided evidence.
 
@@ -55,7 +54,9 @@ class ContextPipeline:
 
         if citations:
             evidence_text = self._format_citations(citations)
-            user_content = f"{EVIDENCE_TEMPLATE.format(evidence=evidence_text)}\n\nQuestion: {query}"
+            user_content = (
+                f"{EVIDENCE_TEMPLATE.format(evidence=evidence_text)}\n\nQuestion: {query}"
+            )
         else:
             user_content = f"{NO_EVIDENCE_NOTE}\n\nQuestion: {query}"
 
@@ -70,5 +71,7 @@ class ContextPipeline:
             source_label = c.source
             if c.page is not None:
                 source_label += f", page {c.page}"
-            parts.append(f"[Excerpt {i}] (Source: {source_label}, relevance: {c.relevance_score:.2f})\n{c.text}")
+            parts.append(
+                f"[Excerpt {i}] (Source: {source_label}, relevance: {c.relevance_score:.2f})\n{c.text}"
+            )
         return "\n\n".join(parts)

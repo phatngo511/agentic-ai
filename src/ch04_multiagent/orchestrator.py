@@ -10,10 +10,10 @@ from __future__ import annotations
 import time
 
 from src.ch02.tools.retriever import DocumentIndex
-from src.ch04_multiagent.agents import RetrieverAgent, ReasoningAgent, VerifierAgent
+from src.ch04_multiagent.agents import ReasoningAgent, RetrieverAgent, VerifierAgent
 from src.ch04_multiagent.contracts import (
-    RetrievalRequest,
     ReasoningRequest,
+    RetrievalRequest,
     VerificationRequest,
 )
 from src.shared.model_client import ModelClient
@@ -39,9 +39,7 @@ class MultiAgentOrchestrator:
         steps = 0
 
         # Step 1: Retrieve
-        retrieval = await self._retriever.run(
-            RetrievalRequest(query=query, top_k=top_k)
-        )
+        retrieval = await self._retriever.run(RetrievalRequest(query=query, top_k=top_k))
         steps += 1
 
         # Step 2: Reason
@@ -87,7 +85,8 @@ class MultiAgentOrchestrator:
 
         avg_relevance = (
             sum(c.relevance_score for c in retrieval.citations) / len(retrieval.citations)
-            if retrieval.citations else 0.0
+            if retrieval.citations
+            else 0.0
         )
 
         confidence = min(0.95, avg_relevance) if verified else avg_relevance * 0.5
@@ -97,7 +96,9 @@ class MultiAgentOrchestrator:
             citations=retrieval.citations,
             confidence=confidence,
             escalated=confidence < 0.3,
-            escalation_reason="Low confidence after multi-agent pipeline" if confidence < 0.3 else None,
+            escalation_reason="Low confidence after multi-agent pipeline"
+            if confidence < 0.3
+            else None,
             steps_taken=steps,
             token_usage=total_usage,
             latency_ms=elapsed,

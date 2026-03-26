@@ -12,14 +12,19 @@ project_root = str(Path(__file__).parent.parent.parent.parent)
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from src.ch05_hitl.approval import ApprovalGate, ApprovalPolicy, MockApprovalProvider, ApprovalDecision
-from src.ch05_hitl.escalation import EscalationPolicy
+from src.ch05_hitl.approval import (
+    ApprovalDecision,
+    ApprovalGate,
+    ApprovalPolicy,
+    MockApprovalProvider,
+)
 from src.ch05_hitl.audit import AuditLog
+from src.ch05_hitl.escalation import EscalationPolicy
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+from agent import IncidentRunbookAgent
 from runbook_search import RunbookIndex, get_default_runbooks
 from signals import Alert, Severity
-from agent import IncidentRunbookAgent
 
 
 async def main(output_path: str | None = None) -> None:
@@ -44,8 +49,11 @@ async def main(output_path: str | None = None) -> None:
     audit = AuditLog()
 
     agent = IncidentRunbookAgent(
-        runbook_index=index, approval_gate=gate,
-        escalation_policy=escalation, audit_log=audit, dry_run=True,
+        runbook_index=index,
+        approval_gate=gate,
+        escalation_policy=escalation,
+        audit_log=audit,
+        dry_run=True,
     )
 
     # Run eval
@@ -67,7 +75,9 @@ async def main(output_path: str | None = None) -> None:
             correct = response.runbook_matched == "none"
         else:
             # Check if the matched runbook title contains key words from the expected ID
-            correct = expected.replace("rb-", "").replace("-", " ") in response.runbook_matched.lower().replace("-", " ")
+            correct = expected.replace("rb-", "").replace(
+                "-", " "
+            ) in response.runbook_matched.lower().replace("-", " ")
 
         if correct:
             passed += 1
@@ -76,10 +86,20 @@ async def main(output_path: str | None = None) -> None:
             failed += 1
             status = "FAIL"
 
-        results.append({"case": case["id"], "status": status, "expected": expected, "got": response.runbook_matched, "confidence": response.confidence})
-        print(f"  [{status}] {case['id']}: expected={expected}, got={response.runbook_matched} (conf={response.confidence:.2f})")
+        results.append(
+            {
+                "case": case["id"],
+                "status": status,
+                "expected": expected,
+                "got": response.runbook_matched,
+                "confidence": response.confidence,
+            }
+        )
+        print(
+            f"  [{status}] {case['id']}: expected={expected}, got={response.runbook_matched} (conf={response.confidence:.2f})"
+        )
 
-    print(f"\nResults: {passed}/{len(cases)} passed ({passed/len(cases)*100:.0f}%)")
+    print(f"\nResults: {passed}/{len(cases)} passed ({passed / len(cases) * 100:.0f}%)")
 
     if output_path:
         Path(output_path).write_text(json.dumps(results, indent=2))

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import time
-from pydantic import BaseModel, Field
 
+from pydantic import BaseModel, Field
 
 MODEL_PRICING: dict[str, dict[str, float]] = {
     "gpt-4o": {"input": 2.50, "output": 10.00},
@@ -43,16 +43,24 @@ class CostProfile(BaseModel):
     def model_call_count(self) -> int:
         return len(self.entries)
 
-    def add(self, step: str, model: str, prompt_tokens: int, completion_tokens: int, latency_ms: float) -> None:
+    def add(
+        self, step: str, model: str, prompt_tokens: int, completion_tokens: int, latency_ms: float
+    ) -> None:
         pricing = MODEL_PRICING.get(model, {"input": 5.0, "output": 15.0})
         cost = (
             prompt_tokens * pricing["input"] / 1_000_000
             + completion_tokens * pricing["output"] / 1_000_000
         )
-        self.entries.append(CostEntry(
-            step=step, model=model, prompt_tokens=prompt_tokens,
-            completion_tokens=completion_tokens, cost_usd=cost, latency_ms=latency_ms,
-        ))
+        self.entries.append(
+            CostEntry(
+                step=step,
+                model=model,
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
+                cost_usd=cost,
+                latency_ms=latency_ms,
+            )
+        )
 
     def summary(self) -> str:
         return (

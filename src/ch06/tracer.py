@@ -71,7 +71,9 @@ class Tracer:
     def start_span(self, name: str, input_data: dict[str, Any] | None = None) -> TraceSpan:
         return TraceSpan(name=name, start_time=time.time(), input_data=input_data or {})
 
-    def end_span(self, span: TraceSpan, output_data: dict[str, Any] | None = None, error: str | None = None) -> TraceSpan:
+    def end_span(
+        self, span: TraceSpan, output_data: dict[str, Any] | None = None, error: str | None = None
+    ) -> TraceSpan:
         span.end_time = time.time()
         span.duration_ms = (span.end_time - span.start_time) * 1000
         span.output_data = output_data or {}

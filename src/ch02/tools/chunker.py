@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from src.shared.types import ToolSchema, ToolParameter, SideEffect
-
+from src.shared.types import SideEffect, ToolParameter, ToolSchema
 
 SCHEMA = ToolSchema(
     name="chunk_document",
@@ -13,8 +12,18 @@ SCHEMA = ToolSchema(
     parameters=[
         ToolParameter(name="text", type="string", description="The document text to chunk"),
         ToolParameter(name="source", type="string", description="Source identifier"),
-        ToolParameter(name="chunk_size", type="integer", description="Target chunk size in characters", required=False),
-        ToolParameter(name="overlap", type="integer", description="Overlap between chunks in characters", required=False),
+        ToolParameter(
+            name="chunk_size",
+            type="integer",
+            description="Target chunk size in characters",
+            required=False,
+        ),
+        ToolParameter(
+            name="overlap",
+            type="integer",
+            description="Overlap between chunks in characters",
+            required=False,
+        ),
     ],
     side_effect=SideEffect.READ,
 )
@@ -22,6 +31,7 @@ SCHEMA = ToolSchema(
 
 class Chunk(BaseModel):
     """A single chunk of text with metadata for retrieval."""
+
     chunk_id: str
     text: str
     source: str
@@ -54,13 +64,15 @@ def chunk_document(
 
         chunk_text = text[start:end].strip()
         if chunk_text:
-            chunks.append(Chunk(
-                chunk_id=f"{source}::chunk_{chunk_index}",
-                text=chunk_text,
-                source=source,
-                start_char=start,
-                end_char=end,
-            ))
+            chunks.append(
+                Chunk(
+                    chunk_id=f"{source}::chunk_{chunk_index}",
+                    text=chunk_text,
+                    source=source,
+                    start_char=start,
+                    end_char=end,
+                )
+            )
             chunk_index += 1
 
         start = end - overlap
@@ -70,7 +82,9 @@ def chunk_document(
     return chunks
 
 
-async def chunk_document_tool(text: str, source: str, chunk_size: int = 1000, overlap: int = 200) -> str:
+async def chunk_document_tool(
+    text: str, source: str, chunk_size: int = 1000, overlap: int = 200
+) -> str:
     """Tool-compatible wrapper that returns a string summary."""
     chunks = chunk_document(text, source, chunk_size, overlap)
     return f"Created {len(chunks)} chunks from '{source}'"

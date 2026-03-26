@@ -7,7 +7,7 @@ where debugging means reading raw text dumps.
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field
 from src.shared.types import Citation
 
 
-class MessageType(str, Enum):
+class MessageType(StrEnum):
     TASK = "task"
     RESULT = "result"
     FEEDBACK = "feedback"
@@ -24,6 +24,7 @@ class MessageType(str, Enum):
 
 class AgentMessage(BaseModel):
     """A typed message between agents."""
+
     sender: str
     recipient: str
     message_type: MessageType
@@ -33,6 +34,7 @@ class AgentMessage(BaseModel):
 
 class RetrievalRequest(AgentMessage):
     """Request to the retriever agent."""
+
     query: str
     top_k: int = 5
 
@@ -46,6 +48,7 @@ class RetrievalRequest(AgentMessage):
 
 class RetrievalResult(AgentMessage):
     """Result from the retriever agent."""
+
     citations: list[Citation] = Field(default_factory=list)
     chunks_searched: int = 0
 
@@ -59,6 +62,7 @@ class RetrievalResult(AgentMessage):
 
 class ReasoningRequest(AgentMessage):
     """Request to the reasoning agent."""
+
     query: str
     citations: list[Citation] = Field(default_factory=list)
 
@@ -72,6 +76,7 @@ class ReasoningRequest(AgentMessage):
 
 class ReasoningResult(AgentMessage):
     """Result from the reasoning agent."""
+
     answer: str = ""
     cited_sources: list[str] = Field(default_factory=list)
 
@@ -85,6 +90,7 @@ class ReasoningResult(AgentMessage):
 
 class VerificationRequest(AgentMessage):
     """Request to the verifier agent."""
+
     answer: str
     cited_sources: list[str] = Field(default_factory=list)
     citations: list[Citation] = Field(default_factory=list)
@@ -99,6 +105,7 @@ class VerificationRequest(AgentMessage):
 
 class VerificationResult(AgentMessage):
     """Result from the verifier agent."""
+
     verified: bool = False
     issues: list[str] = Field(default_factory=list)
 

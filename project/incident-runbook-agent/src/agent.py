@@ -16,22 +16,22 @@ project_root = str(Path(__file__).parent.parent.parent.parent)
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
+from typing import Any
+
+from pydantic import BaseModel
+
 from src.ch05_hitl.approval import (
     ApprovalDecision,
     ApprovalGate,
-    ApprovalPolicy,
     ApprovalRequest,
-    MockApprovalProvider,
 )
-from src.ch05_hitl.escalation import EscalationDecision, EscalationPolicy
 from src.ch05_hitl.audit import AuditLog
-
-from pydantic import BaseModel
-from typing import Any
+from src.ch05_hitl.escalation import EscalationDecision, EscalationPolicy
 
 
 class IncidentResponse(BaseModel):
     """Response from processing a single incident."""
+
     alert_id: str
     alert_message: str
     runbook_matched: str
@@ -69,15 +69,23 @@ class IncidentRunbookAgent:
 
         if not matches:
             self._audit.record(
-                actor="agent", action="search_runbook", decision="no_match",
-                confidence=0.0, risk_level=alert.severity.value,
+                actor="agent",
+                action="search_runbook",
+                decision="no_match",
+                confidence=0.0,
+                risk_level=alert.severity.value,
                 context={"alert_id": alert.alert_id, "message": alert.message},
             )
             elapsed = (time.monotonic() - start) * 1000
             return IncidentResponse(
-                alert_id=alert.alert_id, alert_message=alert.message,
-                runbook_matched="none", confidence=0.0, steps_proposed=0,
-                approval_decision="skipped", executed=False, dry_run=self._dry_run,
+                alert_id=alert.alert_id,
+                alert_message=alert.message,
+                runbook_matched="none",
+                confidence=0.0,
+                steps_proposed=0,
+                approval_decision="skipped",
+                executed=False,
+                dry_run=self._dry_run,
                 processing_time_ms=elapsed,
             )
 
@@ -86,34 +94,45 @@ class IncidentRunbookAgent:
         confidence = best_match.relevance_score
 
         self._audit.record(
-            actor="agent", action="match_runbook", decision=runbook.id,
-            confidence=confidence, risk_level=runbook.risk_level,
+            actor="agent",
+            action="match_runbook",
+            decision=runbook.id,
+            confidence=confidence,
+            risk_level=runbook.risk_level,
             context={"alert_id": alert.alert_id, "runbook_title": runbook.title},
         )
 
         # Step 2: Check escalation policy
         escalation = self._escalation_policy.evaluate(
-            confidence=confidence, risk_tier=runbook.risk_level,
+            confidence=confidence,
+            risk_tier=runbook.risk_level,
         )
 
         if escalation == EscalationDecision.HALT:
             self._audit.record(
-                actor="system", action="escalation_check", decision="halt",
-                confidence=confidence, risk_level=runbook.risk_level,
+                actor="system",
+                action="escalation_check",
+                decision="halt",
+                confidence=confidence,
+                risk_level=runbook.risk_level,
                 notes="Escalation policy halted execution",
             )
             elapsed = (time.monotonic() - start) * 1000
             return IncidentResponse(
-                alert_id=alert.alert_id, alert_message=alert.message,
-                runbook_matched=runbook.title, confidence=confidence,
-                steps_proposed=len(runbook.steps), approval_decision="halted",
-                executed=False, dry_run=self._dry_run, processing_time_ms=elapsed,
+                alert_id=alert.alert_id,
+                alert_message=alert.message,
+                runbook_matched=runbook.title,
+                confidence=confidence,
+                steps_proposed=len(runbook.steps),
+                approval_decision="halted",
+                executed=False,
+                dry_run=self._dry_run,
+                processing_time_ms=elapsed,
             )
 
         # Step 3: Request approval if needed
-        needs_approval = (
-            escalation == EscalationDecision.ESCALATE
-            or any(s.requires_approval for s in runbook.steps)
+        needs_approval = escalation == EscalationDecision.ESCALATE or any(
+            s.requires_approval for s in runbook.steps
         )
 
         approval_decision = "auto_approved"
@@ -140,25 +159,41 @@ class IncidentRunbookAgent:
             if approval_resp.decision == ApprovalDecision.REJECTED:
                 elapsed = (time.monotonic() - start) * 1000
                 return IncidentResponse(
-                    alert_id=alert.alert_id, alert_message=alert.message,
-                    runbook_matched=runbook.title, confidence=confidence,
-                    steps_proposed=len(runbook.steps), approval_decision="rejected",
-                    executed=False, dry_run=self._dry_run, processing_time_ms=elapsed,
+                    alert_id=alert.alert_id,
+                    alert_message=alert.message,
+                    runbook_matched=runbook.title,
+                    confidence=confidence,
+                    steps_proposed=len(runbook.steps),
+                    approval_decision="rejected",
+                    executed=False,
+                    dry_run=self._dry_run,
+                    processing_time_ms=elapsed,
                 )
 
         # Step 4: Execute (or dry-run)
         executed = not self._dry_run
         self._audit.record(
-            actor="agent", action="execute_runbook",
+            actor="agent",
+            action="execute_runbook",
             decision="dry_run" if self._dry_run else "executed",
-            confidence=confidence, risk_level=runbook.risk_level,
-            context={"runbook_id": runbook.id, "steps": len(runbook.steps), "dry_run": self._dry_run},
+            confidence=confidence,
+            risk_level=runbook.risk_level,
+            context={
+                "runbook_id": runbook.id,
+                "steps": len(runbook.steps),
+                "dry_run": self._dry_run,
+            },
         )
 
         elapsed = (time.monotonic() - start) * 1000
         return IncidentResponse(
-            alert_id=alert.alert_id, alert_message=alert.message,
-            runbook_matched=runbook.title, confidence=confidence,
-            steps_proposed=len(runbook.steps), approval_decision=approval_decision,
-            executed=executed, dry_run=self._dry_run, processing_time_ms=elapsed,
+            alert_id=alert.alert_id,
+            alert_message=alert.message,
+            runbook_matched=runbook.title,
+            confidence=confidence,
+            steps_proposed=len(runbook.steps),
+            approval_decision=approval_decision,
+            executed=executed,
+            dry_run=self._dry_run,
+            processing_time_ms=elapsed,
         )

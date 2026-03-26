@@ -12,10 +12,10 @@ from __future__ import annotations
 
 from src.ch02.tools.retriever import DocumentIndex
 from src.ch04_multiagent.contracts import (
-    RetrievalRequest,
-    RetrievalResult,
     ReasoningRequest,
     ReasoningResult,
+    RetrievalRequest,
+    RetrievalResult,
     VerificationRequest,
     VerificationResult,
 )
@@ -74,7 +74,9 @@ Rules:
 
         messages = [
             Message(role=Role.SYSTEM, content=self.SYSTEM_PROMPT),
-            Message(role=Role.USER, content=f"Evidence:\n{evidence_text}\n\nQuestion: {request.query}"),
+            Message(
+                role=Role.USER, content=f"Evidence:\n{evidence_text}\n\nQuestion: {request.query}"
+            ),
         ]
 
         response = await self._client.complete(CompletionRequest(messages=messages))
@@ -134,8 +136,11 @@ Return valid JSON only."""
         self.total_usage = _merge_usage(self.total_usage, response.usage)
 
         import json
+
         try:
-            result = json.loads(response.content or '{"verified": false, "issues": ["No response"]}')
+            result = json.loads(
+                response.content or '{"verified": false, "issues": ["No response"]}'
+            )
             return VerificationResult(
                 verified=result.get("verified", False),
                 issues=result.get("issues", []),

@@ -18,10 +18,14 @@ async def test_full_multiagent_pipeline():
     )
     index.add_chunks(chunks)
 
-    mock = MockClient(responses=[
-        CompletionResponse(content="Machine learning is a subset of AI. [Source: ml_intro.txt]"),
-        CompletionResponse(content='{"verified": true, "issues": []}'),
-    ])
+    mock = MockClient(
+        responses=[
+            CompletionResponse(
+                content="Machine learning is a subset of AI. [Source: ml_intro.txt]"
+            ),
+            CompletionResponse(content='{"verified": true, "issues": []}'),
+        ]
+    )
 
     orchestrator = MultiAgentOrchestrator(client=mock, index=index)
     response = await orchestrator.run("What is machine learning?")

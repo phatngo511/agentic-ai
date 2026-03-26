@@ -59,12 +59,14 @@ class TaskState(BaseModel):
         return len(self.steps) >= self.max_steps
 
     def add_step(self, action: str, params: dict[str, Any], result: str) -> None:
-        self.steps.append({
-            "action": action,
-            "params": params,
-            "result": result,
-            "timestamp": time.time(),
-        })
+        self.steps.append(
+            {
+                "action": action,
+                "params": params,
+                "result": result,
+                "timestamp": time.time(),
+            }
+        )
 
     def mark_complete(self, result: str, confidence: float) -> None:
         self.result = result

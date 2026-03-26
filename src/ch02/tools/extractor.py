@@ -9,18 +9,19 @@ from src.shared.types import (
     CompletionRequest,
     Message,
     Role,
-    ToolSchema,
-    ToolParameter,
     SideEffect,
+    ToolParameter,
+    ToolSchema,
 )
-
 
 SCHEMA = ToolSchema(
     name="extract_structured",
     description="Extract structured information from text according to a specified schema.",
     parameters=[
         ToolParameter(name="text", type="string", description="Source text to extract from"),
-        ToolParameter(name="fields", type="string", description="Comma-separated list of fields to extract"),
+        ToolParameter(
+            name="fields", type="string", description="Comma-separated list of fields to extract"
+        ),
     ],
     side_effect=SideEffect.READ,
 )
@@ -49,7 +50,10 @@ async def extract_structured(
 
     request = CompletionRequest(
         messages=[
-            Message(role=Role.SYSTEM, content="You are a precise information extractor. Return only valid JSON."),
+            Message(
+                role=Role.SYSTEM,
+                content="You are a precise information extractor. Return only valid JSON.",
+            ),
             Message(role=Role.USER, content=EXTRACTION_PROMPT.format(fields=fields, text=text)),
         ],
         temperature=0.0,

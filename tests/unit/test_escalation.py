@@ -1,6 +1,6 @@
 """Tests for escalation policies."""
 
-from src.ch05_hitl.escalation import EscalationDecision, EscalationPolicy, RiskTier
+from src.ch05_hitl.escalation import EscalationDecision, EscalationPolicy
 
 
 def test_low_risk_high_confidence_proceeds():

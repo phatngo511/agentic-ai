@@ -11,15 +11,15 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from src.ch05_hitl.approval import ApprovalGate, ApprovalPolicy, ConsoleApprovalProvider
-from src.ch05_hitl.escalation import EscalationPolicy
 from src.ch05_hitl.audit import AuditLog
+from src.ch05_hitl.escalation import EscalationPolicy
 
 # These are in the same project directory
 sys.path.insert(0, str(Path(__file__).parent))
 
-from signals import generate_incidents
-from runbook_search import RunbookIndex, get_default_runbooks
 from agent import IncidentRunbookAgent
+from runbook_search import RunbookIndex, get_default_runbooks
+from signals import generate_incidents
 
 
 async def main() -> None:
@@ -53,7 +53,7 @@ async def main() -> None:
         print(f"  Approval: {response.approval_decision}")
         print(f"  Executed: {response.executed} (dry_run={response.dry_run})")
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(audit.to_markdown())
 
 

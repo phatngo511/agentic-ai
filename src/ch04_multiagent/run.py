@@ -20,7 +20,9 @@ from src.shared.model_client import create_client
 
 async def main(docs_path: str, query: str) -> None:
     config = get_model_config()
-    client = create_client(provider=config.provider, api_key=config.api_key, model_name=config.model_name)
+    client = create_client(
+        provider=config.provider, api_key=config.api_key, model_name=config.model_name
+    )
 
     index = DocumentIndex(collection_name="multiagent_docs")
     docs_dir = Path(docs_path)
@@ -41,7 +43,9 @@ async def main(docs_path: str, query: str) -> None:
 
     print(f"\nAnswer: {response.answer}")
     print(f"Confidence: {response.confidence:.2f}")
-    print(f"Steps: {response.steps_taken} | Tokens: {response.token_usage.total_tokens} | Latency: {response.latency_ms:.0f}ms")
+    print(
+        f"Steps: {response.steps_taken} | Tokens: {response.token_usage.total_tokens} | Latency: {response.latency_ms:.0f}ms"
+    )
     if response.escalated:
         print(f"ESCALATED: {response.escalation_reason}")
 

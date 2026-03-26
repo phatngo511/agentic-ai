@@ -12,13 +12,13 @@ to decide whether it needs approval -- the policy does.
 from __future__ import annotations
 
 import time
-from enum import Enum
+from enum import StrEnum
 from typing import Any, Protocol
 
 from pydantic import BaseModel, Field
 
 
-class ApprovalDecision(str, Enum):
+class ApprovalDecision(StrEnum):
     APPROVED = "approved"
     REJECTED = "rejected"
     MODIFIED = "modified"
@@ -27,6 +27,7 @@ class ApprovalDecision(str, Enum):
 
 class ApprovalRequest(BaseModel):
     """A request for approval of a proposed action."""
+
     action: str
     description: str
     confidence: float
@@ -37,6 +38,7 @@ class ApprovalRequest(BaseModel):
 
 class ApprovalResponse(BaseModel):
     """The result of an approval request."""
+
     decision: ApprovalDecision
     reviewer: str = ""
     reason: str = ""
@@ -52,6 +54,7 @@ class ApprovalPolicy(BaseModel):
     timeout_seconds: how long to wait for human response before timing out
     timeout_action: what to do on timeout (reject or escalate)
     """
+
     auto_approve_threshold: float = 0.9
     always_require_for: list[str] = Field(default_factory=lambda: ["high", "critical"])
     timeout_seconds: float = 300.0
@@ -60,6 +63,7 @@ class ApprovalPolicy(BaseModel):
 
 class ApprovalProvider(Protocol):
     """Interface for approval providers (human, mock, queue-based)."""
+
     async def request_approval(self, request: ApprovalRequest) -> ApprovalResponse: ...
 
 
@@ -90,36 +94,42 @@ class ConsoleApprovalProvider:
 
     async def request_approval(self, request: ApprovalRequest) -> ApprovalResponse:
         start = time.monotonic()
-        print(f"\n{'='*60}")
-        print(f"APPROVAL REQUIRED")
+        print(f"\n{'=' * 60}")
+        print("APPROVAL REQUIRED")
         print(f"Action: {request.action}")
         print(f"Description: {request.description}")
         print(f"Confidence: {request.confidence:.2f}")
         print(f"Risk Level: {request.risk_level}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         while True:
             choice = input("Approve? [y]es / [n]o / [m]odify: ").strip().lower()
             if choice in ("y", "yes"):
                 elapsed = (time.monotonic() - start) * 1000
                 return ApprovalResponse(
-                    decision=ApprovalDecision.APPROVED, reviewer="human",
-                    reason="Manually approved", response_time_ms=elapsed,
+                    decision=ApprovalDecision.APPROVED,
+                    reviewer="human",
+                    reason="Manually approved",
+                    response_time_ms=elapsed,
                 )
             elif choice in ("n", "no"):
                 reason = input("Reason for rejection: ").strip()
                 elapsed = (time.monotonic() - start) * 1000
                 return ApprovalResponse(
-                    decision=ApprovalDecision.REJECTED, reviewer="human",
-                    reason=reason or "Rejected by reviewer", response_time_ms=elapsed,
+                    decision=ApprovalDecision.REJECTED,
+                    reviewer="human",
+                    reason=reason or "Rejected by reviewer",
+                    response_time_ms=elapsed,
                 )
             elif choice in ("m", "modify"):
                 modification = input("Describe modification: ").strip()
                 elapsed = (time.monotonic() - start) * 1000
                 return ApprovalResponse(
-                    decision=ApprovalDecision.MODIFIED, reviewer="human",
+                    decision=ApprovalDecision.MODIFIED,
+                    reviewer="human",
                     reason="Modified by reviewer",
-                    modifications={"description": modification}, response_time_ms=elapsed,
+                    modifications={"description": modification},
+                    response_time_ms=elapsed,
                 )
 
 

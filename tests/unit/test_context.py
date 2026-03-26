@@ -1,9 +1,7 @@
 """Tests for the context assembly pipeline."""
 
-import pytest
-
 from src.ch02.context import ContextPipeline
-from src.shared.types import Citation, Message, Role
+from src.shared.types import Citation, Role
 
 
 def test_build_system_prompt():

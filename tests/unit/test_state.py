@@ -1,7 +1,5 @@
 """Tests for session and task state management."""
 
-import pytest
-
 from src.ch03.state import SessionState, TaskState
 
 

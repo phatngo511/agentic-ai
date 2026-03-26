@@ -6,19 +6,18 @@ Based on confidence scores, risk tiers, and action counts.
 
 from __future__ import annotations
 
-from enum import Enum
-from typing import Any
+from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
 
-class EscalationDecision(str, Enum):
+class EscalationDecision(StrEnum):
     PROCEED = "proceed"
     ESCALATE = "escalate"
     HALT = "halt"
 
 
-class RiskTier(str, Enum):
+class RiskTier(StrEnum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -27,6 +26,7 @@ class RiskTier(str, Enum):
 
 class EscalationRule(BaseModel):
     """A single escalation rule for a risk tier."""
+
     risk_tier: RiskTier
     min_confidence_to_proceed: float
     max_autonomous_actions: int
@@ -36,12 +36,28 @@ class EscalationRule(BaseModel):
 class EscalationPolicy(BaseModel):
     """Configurable escalation policy with per-tier rules."""
 
-    rules: list[EscalationRule] = Field(default_factory=lambda: [
-        EscalationRule(risk_tier=RiskTier.LOW, min_confidence_to_proceed=0.3, max_autonomous_actions=10),
-        EscalationRule(risk_tier=RiskTier.MEDIUM, min_confidence_to_proceed=0.6, max_autonomous_actions=5),
-        EscalationRule(risk_tier=RiskTier.HIGH, min_confidence_to_proceed=0.8, max_autonomous_actions=2, halt_on_failure=True),
-        EscalationRule(risk_tier=RiskTier.CRITICAL, min_confidence_to_proceed=1.0, max_autonomous_actions=0, halt_on_failure=True),
-    ])
+    rules: list[EscalationRule] = Field(
+        default_factory=lambda: [
+            EscalationRule(
+                risk_tier=RiskTier.LOW, min_confidence_to_proceed=0.3, max_autonomous_actions=10
+            ),
+            EscalationRule(
+                risk_tier=RiskTier.MEDIUM, min_confidence_to_proceed=0.6, max_autonomous_actions=5
+            ),
+            EscalationRule(
+                risk_tier=RiskTier.HIGH,
+                min_confidence_to_proceed=0.8,
+                max_autonomous_actions=2,
+                halt_on_failure=True,
+            ),
+            EscalationRule(
+                risk_tier=RiskTier.CRITICAL,
+                min_confidence_to_proceed=1.0,
+                max_autonomous_actions=0,
+                halt_on_failure=True,
+            ),
+        ]
+    )
 
     def evaluate(
         self,

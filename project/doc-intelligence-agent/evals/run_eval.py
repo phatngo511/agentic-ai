@@ -20,7 +20,6 @@ from src.ch06.eval_harness import EvalRunner, load_cases, load_rubric
 from src.shared.config import get_model_config
 from src.shared.model_client import create_client
 
-
 EVAL_DIR = Path(__file__).parent
 DATASET_PATH = EVAL_DIR / "dataset.jsonl"
 RUBRIC_PATH = EVAL_DIR / "rubric.yaml"
