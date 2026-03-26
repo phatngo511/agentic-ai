@@ -1,4 +1,4 @@
-.PHONY: install test lint eval run clean
+.PHONY: install test lint eval run clean serve build-site deploy compare-multiagent
 
 install:
 	pip install -e ".[dev]"
@@ -28,6 +28,18 @@ run:
 
 compare:
 	python src/ch03/compare.py
+
+compare-multiagent:
+	python -m src.ch04_multiagent.run --docs docs/book/ --query "What is multi-agent?"
+
+serve:
+	mkdocs serve
+
+build-site:
+	mkdocs build --strict
+
+deploy:
+	mkdocs gh-deploy --force
 
 typecheck:
 	mypy src/ --ignore-missing-imports

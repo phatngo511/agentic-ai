@@ -6,9 +6,15 @@
 
 Most agentic AI material teaches you how to make an impressive demo. This repo teaches engineers how to build agent systems that survive real-world constraints.
 
+## Read the Book
+
+The full book is available free online at [sunilprakash.com/agentic-ai](https://sunilprakash.com/agentic-ai/).
+
+This repo contains the source code, evaluation harnesses, and projects that accompany the book.
+
 ## What This Is
 
-A deep, engineering-first guide to designing, building, evaluating, and hardening agentic AI systems. Five chapters of structured material, working Python code for every concept, and a threaded project that runs from first principles through production readiness. This is not a tutorial. It is a field manual.
+A deep, engineering-first guide to designing, building, evaluating, and hardening agentic AI systems. Seven chapters of structured material, working Python code for every concept, and two threaded projects that run from first principles through production readiness. This is not a tutorial. It is a field manual.
 
 ## Who This Is For
 
@@ -51,17 +57,19 @@ If you are looking for a prompt engineering tutorial, a framework crash course, 
 
 **Serious examples.** The running project has four layers, real failure modes, two implementations of the same task, an eval harness with gold data, and an honest retrospective on which parts actually needed agent autonomy.
 
-## The Threaded Project: Document Intelligence Agent
+## Projects
 
-Every chapter uses the same system -- a Document Intelligence Agent that ingests documents, answers questions with citations, and knows when it does not have enough evidence to answer. It is introduced in Chapter 1, first built in Chapter 2, compared against a deterministic workflow in Chapter 3, evaluated and hardened in Chapter 4, and honestly assessed in Chapter 5. By the end, you will have built, compared, evaluated, and hardened this system -- and you will have a clear framework for deciding whether an agent was the right call.
+**Document Intelligence Agent** -- built incrementally across Chapters 1-3 and 6-7. Ingests documents, answers questions with citations, and knows when it does not have enough evidence to answer.
+
+**Incident Runbook Agent** -- introduced in Chapters 4-5. Inspects signals, searches runbooks, proposes remediation steps, and requests human approval before acting.
 
 ## Learning Paths
 
 | Path | Goal | Chapters |
 |------|------|----------|
-| **Fast Engineer** | Build something this week with clear tradeoffs | 1, 2, 5 |
-| **Full Mastery** | Understand every layer from concepts through hardening | 1, 2, 3, 4, 5 |
-| **Enterprise Architect** | Evaluate agentic patterns for a team or organization | 1, 3, 4, 5 |
+| **Fast Engineer** | Build something this week with clear tradeoffs | 1, 2, 7 |
+| **Full Mastery** | Understand every layer from concepts through hardening | 1, 2, 3, 4, 5, 6, 7 |
+| **Enterprise Architect** | Evaluate agentic patterns for a team or organization | 1, 3, 4, 5, 6, 7 |
 
 ## Chapters
 
@@ -70,8 +78,10 @@ Every chapter uses the same system -- a Document Intelligence Agent that ingests
 | 1 | What "Agentic" Actually Means | Definitions, comparison table, decision map |
 | 2 | Tools, Context, and the Agent Loop | Tool registry, context pipeline, first working agent |
 | 3 | Workflow First, Agent Second | Same task two ways -- the key architectural decision |
-| 4 | Evaluating and Hardening Agents | Eval, tracing, reliability, cost, security |
-| 5 | When Not to Use Agents | The signature chapter -- building engineering judgment |
+| 4 | Multi-Agent Systems Without Theater | Coordination patterns that solve real problems, not demos |
+| 5 | Human-in-the-Loop as Architecture | Approval gates, escalation policy, and audit trails |
+| 6 | Evaluating and Hardening Agents | Eval, tracing, reliability, cost, security |
+| 7 | When Not to Use Agents | The signature chapter -- building engineering judgment |
 
 ## Repo Structure
 
@@ -82,24 +92,30 @@ agentic-ai-for-serious-engineers/
 │   ├── 01-what-agentic-means.md
 │   ├── 02-tools-context-agent-loop.md
 │   ├── 03-workflow-first-agent-second.md
-│   ├── 04-evaluating-and-hardening.md
-│   └── 05-when-not-to-use-agents.md
+│   ├── 04-multi-agent-without-theater.md
+│   ├── 05-human-in-the-loop.md
+│   ├── 06-evaluating-and-hardening.md
+│   └── 07-when-not-to-use-agents.md
 ├── src/                          # Working examples, per-chapter
 │   ├── shared/                    # Model client, config, common types
 │   ├── ch02/                      # Tool registry, context pipeline, first agent
 │   ├── ch03/                      # Workflow vs agent comparison, state, planning
-│   └── ch04/                      # Eval harness, traces, reliability, security
-├── project/                       # Threaded end-to-end project
-│   └── doc-intelligence-agent/
-│       ├── evals/                 # Gold dataset, rubric, eval runner
-│       └── docs/                  # Architecture and failure analysis
+│   ├── ch04_multiagent/           # Multi-agent contracts, agents, orchestrator
+│   ├── ch05_hitl/                 # Approval gates, escalation, audit logging
+│   └── ch06/                      # Eval harness, traces, reliability, security
+├── project/                       # Threaded end-to-end projects
+│   ├── doc-intelligence-agent/
+│   │   ├── evals/                 # Gold dataset, rubric, eval runner
+│   │   └── docs/                  # Architecture and failure analysis
+│   └── incident-runbook-agent/    # Multi-agent with human approval
+├── docs/                          # MkDocs Material site source
 ├── diagrams/
 │   └── source/                    # Architecture-grade SVG diagrams
 ├── tests/
 │   ├── unit/                      # Component-level tests
 │   └── integration/               # Pipeline and system tests
 ├── pyproject.toml                 # Dependencies (single source of truth)
-├── Makefile                       # install, test, eval, run, compare
+├── Makefile                       # install, test, eval, run, compare, serve
 ├── .env.example                   # Required environment variables
 ├── PRINCIPLES.md                  # Engineering principles
 ├── ROADMAP.md                     # What shipped, what is next
@@ -112,7 +128,7 @@ agentic-ai-for-serious-engineers/
 # Install
 make install
 
-# Run tests (27 passing)
+# Run tests (52+ passing)
 make test
 
 # Run the Document Intelligence Agent
@@ -130,7 +146,7 @@ This repo follows eight engineering principles that shape every chapter, every c
 
 ## Roadmap
 
-Phase 1 is shipped. Phase 2 covers multi-agent systems, deeper security, governance, and two more projects. No timelines promised. Read the details: [ROADMAP.md](ROADMAP.md).
+Phase 1 and Phase 2 are shipped. Seven chapters, two end-to-end projects, 52+ passing tests, and a live MkDocs site. Phase 3 covers advanced topics. Read the details: [ROADMAP.md](ROADMAP.md).
 
 ## License
 

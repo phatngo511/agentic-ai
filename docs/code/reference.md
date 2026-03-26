@@ -37,11 +37,24 @@ Workflow-first architecture: fixed pipeline vs bounded agent.
 
 ## Chapter 4 (`src/ch04_multiagent/`)
 
-*Coming soon*
+Multi-agent coordination: typed contracts, specialized agents, verification loop.
+
+| Module | Description |
+|--------|-------------|
+| `contracts.py` | Typed message contracts for inter-agent communication |
+| `agents.py` | RetrieverAgent, ReasoningAgent, VerifierAgent |
+| `orchestrator.py` | Multi-agent coordinator with verification loop |
+| `compare.py` | Single-agent vs multi-agent comparison runner |
 
 ## Chapter 5 (`src/ch05_hitl/`)
 
-*Coming soon*
+Human-in-the-loop: approval gates, escalation policy, structured audit logging.
+
+| Module | Description |
+|--------|-------------|
+| `approval.py` | Approval gate middleware with auto-approve and human review |
+| `escalation.py` | Escalation policy engine with per-risk-tier rules |
+| `audit.py` | Append-only structured audit logging |
 
 ## Chapter 6 (`src/ch06/`)
 
