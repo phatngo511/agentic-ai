@@ -1,16 +1,15 @@
 # Agentic AI for Serious Engineers
 
+[![Read Online](https://img.shields.io/badge/Read_Online-sunilprakash.com-1a1a1a?style=flat-square)](https://sunilprakash.com/agentic-ai/)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey?style=flat-square)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 **A practical field guide to building reliable, evaluable, and production-grade agent systems.**
+
+**[Read the book free online](https://sunilprakash.com/agentic-ai/)**
 
 ---
 
 Most agentic AI material teaches you how to make an impressive demo. This repo teaches engineers how to build agent systems that survive real-world constraints.
-
-## Read the Book
-
-The full book is available free online at [sunilprakash.com/agentic-ai](https://sunilprakash.com/agentic-ai/).
-
-This repo contains the source code, evaluation harnesses, and projects that accompany the book.
 
 ## What This Is
 
@@ -53,7 +52,7 @@ If you are looking for a prompt engineering tutorial, a framework crash course, 
 
 **Framework-neutral.** Concepts are taught through raw implementations, minimal custom orchestration, and selected frameworks. You learn ideas that survive tool churn, not one vendor's ecosystem.
 
-**Deep but focused.** Five chapters, not twenty. Each one is dense enough to re-read and find something new. No filler sections, no padding, no "hello world" warmups.
+**Deep but focused.** Seven chapters, not twenty. Each one is dense enough to re-read and find something new. No filler sections, no padding, no "hello world" warmups.
 
 **Serious examples.** The running project has four layers, real failure modes, two implementations of the same task, an eval harness with gold data, and an honest retrospective on which parts actually needed agent autonomy.
 
@@ -119,7 +118,7 @@ agentic-ai-for-serious-engineers/
 ├── .env.example                   # Required environment variables
 ├── PRINCIPLES.md                  # Engineering principles
 ├── ROADMAP.md                     # What shipped, what is next
-└── LICENSE                        # MIT
+└── LICENSE                        # CC BY-NC-SA 4.0
 ```
 
 ## Getting Started
@@ -148,6 +147,10 @@ This repo follows eight engineering principles that shape every chapter, every c
 
 Phase 1 and Phase 2 are shipped. Seven chapters, two end-to-end projects, 52+ passing tests, and a live MkDocs site. Phase 3 covers advanced topics. Read the details: [ROADMAP.md](ROADMAP.md).
 
+## Contributing
+
+Found something wrong or have a suggestion? [Open an issue](https://github.com/sunilp/agentic-ai/issues) or submit a pull request. If this book helped you build something real, consider giving it a star -- it helps others find it.
+
 ## License
 
-MIT. See [LICENSE](LICENSE).
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Free to read, share, and adapt with attribution. Commercial use requires permission.
