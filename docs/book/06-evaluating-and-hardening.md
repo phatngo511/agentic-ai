@@ -1,4 +1,4 @@
-# Chapter 4: Evaluating and Hardening Agents
+# Chapter 6: Evaluating and Hardening Agents
 
 ## Why this matters
 
@@ -23,7 +23,7 @@ Evaluation for LLM systems is harder than traditional software testing because t
 
 ### The evaluation harness
 
-The `EvalRunner` in `src/ch04/eval_harness.py` provides the structure. It takes a list of test cases, runs each one through the agent, and scores the results against a rubric.
+The `EvalRunner` in `src/ch06/eval_harness.py` provides the structure. It takes a list of test cases, runs each one through the agent, and scores the results against a rubric.
 
 **Test cases** (`EvalCase`) define what to test:
 
@@ -112,7 +112,7 @@ The harness is only as good as the test cases. Here are principles for building 
 
 ### Structured tracing
 
-You cannot improve what you cannot see. The `Tracer` in `src/ch04/tracer.py` provides structured execution logging for every agent interaction.
+You cannot improve what you cannot see. The `Tracer` in `src/ch06/tracer.py` provides structured execution logging for every agent interaction.
 
 A trace captures the full lifecycle of a request:
 
@@ -170,7 +170,7 @@ In production, implement sampling. Trace 100% of requests in development. In pro
 
 LLM APIs fail. They rate-limit you. They time out. They return garbage. They return 500 errors during peak hours. Your system must handle this without losing work.
 
-The reliability module in `src/ch04/reliability.py` provides three mechanisms: retry, checkpoint, and idempotency.
+The reliability module in `src/ch06/reliability.py` provides three mechanisms: retry, checkpoint, and idempotency.
 
 ### Retry with backoff
 
@@ -228,7 +228,7 @@ This matters for two reasons. First, cost: duplicate tool calls that make model 
 
 LLM costs are variable and unpredictable, especially in agent systems where the number of model calls per request varies. A system that costs $0.005 per request on average can cost $0.10 on a single complex request. Without tracking, these spikes are invisible until the monthly bill arrives.
 
-The `CostProfile` in `src/ch04/cost_profiler.py` tracks per-step cost:
+The `CostProfile` in `src/ch06/cost_profiler.py` tracks per-step cost:
 
 ```python
 class CostProfile(BaseModel):
@@ -266,7 +266,7 @@ Attach this to every `AgentResponse` and log it. Over time, you build a dataset 
 
 Agent systems have a specific threat model that traditional software does not share. The model processes untrusted input (the user's query, retrieved documents) and produces actions (tool calls) based on that input. This means the input can influence the actions in ways the system designer did not intend.
 
-The security module in `src/ch04/security.py` addresses two aspects: permission enforcement and injection detection.
+The security module in `src/ch06/security.py` addresses two aspects: permission enforcement and injection detection.
 
 ### Permission policies
 

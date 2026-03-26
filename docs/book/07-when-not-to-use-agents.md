@@ -1,4 +1,4 @@
-# Chapter 5: When Not to Use Agents
+# Chapter 7: When Not to Use Agents
 
 ## Why this matters
 

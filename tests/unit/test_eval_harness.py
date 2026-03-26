@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.ch04.eval_harness import EvalCase, EvalResult, EvalRunner, Rubric, RubricCriterion
+from src.ch06.eval_harness import EvalCase, EvalResult, EvalRunner, Rubric, RubricCriterion
 
 
 @pytest.fixture

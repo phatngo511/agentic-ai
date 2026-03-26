@@ -16,7 +16,7 @@ from src.ch02.context import ContextPipeline
 from src.ch02.tool_registry import ToolRegistry
 from src.ch02.tools.chunker import chunk_document
 from src.ch02.tools.retriever import DocumentIndex
-from src.ch04.eval_harness import EvalRunner, load_cases, load_rubric
+from src.ch06.eval_harness import EvalRunner, load_cases, load_rubric
 from src.shared.config import get_model_config
 from src.shared.model_client import create_client
 

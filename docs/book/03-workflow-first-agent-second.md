@@ -267,6 +267,6 @@ The workflow and agent have different failure profiles, which is part of the com
 
 You have now built the same task two ways and have a framework for choosing between them. You understand the cost, latency, and quality tradeoffs. You have state management that tracks every step for debugging and evaluation.
 
-But "understanding the tradeoffs" and "measuring whether it works" are different things. The comparison shows you the structural differences. It does not tell you whether the answers are correct, whether the citations are accurate, whether the escalation decisions are appropriate, or whether the system is robust to adversarial inputs.
+But the single-agent boundary is not always the right boundary. Some tasks are genuinely parallel. Some require different expertise in different stages. Some are too large for one context window, one tool set, or one system prompt to handle well.
 
-Chapter 4 answers these questions. It introduces an evaluation harness that tests both implementations systematically, a tracing system that records every decision for debugging, reliability engineering for production resilience, cost profiling for budget management, and security testing for adversarial robustness. If this chapter asked "which architecture?" then the next chapter asks "does it work, and can I trust it?"
+Chapter 4 pushes into that territory. It asks: I know when to use a single agent. But when do I actually need multiple agents -- and how do I keep them from turning into distributed confusion?
