@@ -84,6 +84,8 @@ Multiple agents review the same output independently, and a final agent reconcil
 
 We do not use this pattern in this chapter because our task does not need it. But it appears in Chapter 9 (Compliance and Guardrails) where different policy dimensions require genuinely different evaluation criteria.
 
+![Multi-Agent Coordination Pattern](../../diagrams/source/multi-agent-coordination.svg)
+
 ## Message contracts
 
 Agents that communicate through untyped strings create debugging nightmares. When Agent A passes a result to Agent B as a freeform string, and Agent B produces an unexpected output, you cannot tell whether A sent the wrong information or B misinterpreted it. The boundary between agents becomes a black box.
@@ -116,6 +118,8 @@ class VerificationResult(AgentMessage):
 The `MessageType` enum (`TASK`, `RESULT`, `FEEDBACK`, `ESCALATION`) makes the intent of each message explicit. When you read the orchestrator's logs, you see a sequence of typed interactions, not a wall of text.
 
 This is not over-engineering. It is the minimum structure needed to debug a multi-agent system in production. When verification fails, you can inspect the `VerificationResult` and see exactly which issues were flagged. When the reasoner re-runs with feedback, you can trace the `FEEDBACK` message back to the specific verification issues that triggered it.
+
+![Typed Message Contract Flow](../../diagrams/source/message-contract-flow.svg)
 
 ### The contract trap
 
@@ -222,6 +226,8 @@ Three design decisions deserve attention.
 
 ## The comparison
 
+![Single-Agent vs. Multi-Agent Architecture](../../diagrams/source/single-vs-multi-agent.svg)
+
 The `MultiAgentComparisonRunner` in `src/ch04_multiagent/compare.py` runs the single-agent implementation from Chapter 3 and the multi-agent implementation on the same queries:
 
 ```python
@@ -290,6 +296,8 @@ When should a multi-agent system stop? Our system has a clear answer: when the v
 Ambiguous stopping rules are a reliability hazard. If the stopping condition is "when the output is good enough," you have delegated a critical system decision to a model's judgment. Define stopping rules explicitly. Make them measurable. Test them.
 
 ## Cost explosion
+
+![Cost Multiplication: Single vs. Multi-Agent](../../diagrams/source/multi-agent-cost.svg)
 
 Multi-agent multiplies the agent tax introduced in Chapter 3. Where a single agent's overhead was 2-5x the workflow's cost, multi-agent adds another multiplier.
 
