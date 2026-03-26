@@ -2,7 +2,6 @@
 name = "agentic-ai-for-serious-engineers"
 version = "0.1.0"
 description = "A practical field guide to building reliable, evaluable, and production-grade agent systems"
-readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.11"
 authors = [{name = "Sunil Prakash"}]
