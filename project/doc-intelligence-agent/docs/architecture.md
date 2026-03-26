@@ -23,15 +23,15 @@ User Query -> Retriever (query index) -> Context Pipeline -> Model -> Answer
 
 | Component | Responsibility | Module |
 |-----------|---------------|--------|
-| Document Loader | Parse PDF/MD/TXT to text | `code/ch02/tools/document_loader.py` |
-| Chunker | Split text into retrieval-friendly chunks | `code/ch02/tools/chunker.py` |
-| Document Index | Vector storage and similarity search | `code/ch02/tools/retriever.py` |
-| Context Pipeline | Assemble system prompt + evidence + query | `code/ch02/context.py` |
-| Tool Registry | Validate and execute tool calls | `code/ch02/tool_registry.py` |
-| Agent | Observe-think-act loop with bounded autonomy | `code/ch03/agent.py` |
-| Workflow | Fixed retrieve-context-answer pipeline | `code/ch03/workflow.py` |
-| Eval Harness | Run test cases and score responses | `code/ch04/eval_harness.py` |
-| Tracer | Structured execution logging | `code/ch04/tracer.py` |
+| Document Loader | Parse PDF/MD/TXT to text | `src/ch02/tools/document_loader.py` |
+| Chunker | Split text into retrieval-friendly chunks | `src/ch02/tools/chunker.py` |
+| Document Index | Vector storage and similarity search | `src/ch02/tools/retriever.py` |
+| Context Pipeline | Assemble system prompt + evidence + query | `src/ch02/context.py` |
+| Tool Registry | Validate and execute tool calls | `src/ch02/tool_registry.py` |
+| Agent | Observe-think-act loop with bounded autonomy | `src/ch03/agent.py` |
+| Workflow | Fixed retrieve-context-answer pipeline | `src/ch03/workflow.py` |
+| Eval Harness | Run test cases and score responses | `src/ch04/eval_harness.py` |
+| Tracer | Structured execution logging | `src/ch04/tracer.py` |
 
 ## Key design decisions
 

@@ -2,8 +2,8 @@
 
 import pytest
 
-from code.ch02.tool_registry import ToolRegistry
-from code.shared.types import ToolSchema, ToolParameter, ToolResult, SideEffect
+from src.ch02.tool_registry import ToolRegistry
+from src.shared.types import ToolSchema, ToolParameter, ToolResult, SideEffect
 
 
 @pytest.fixture

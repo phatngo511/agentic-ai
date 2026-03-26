@@ -2,7 +2,7 @@
 
 import pytest
 
-from code.ch03.state import SessionState, TaskState
+from src.ch03.state import SessionState, TaskState
 
 
 def test_session_state_tracks_history():

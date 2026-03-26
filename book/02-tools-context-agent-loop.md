@@ -22,7 +22,7 @@ If you have used LLMs through an API, you know the basic interaction: you send m
 
 ### Provider neutrality
 
-The first design decision in our system is provider neutrality. Look at `code/shared/model_client.py`. The `ModelClient` abstract class defines a single method:
+The first design decision in our system is provider neutrality. Look at `src/shared/model_client.py`. The `ModelClient` abstract class defines a single method:
 
 ```python
 async def complete(self, request: CompletionRequest) -> CompletionResponse
@@ -40,7 +40,7 @@ The rest of the codebase never imports `openai` or `anthropic` directly. Provide
 
 ### Typed contracts
 
-All data flowing through the system uses the types defined in `code/shared/types.py`. These are Pydantic models: `Message`, `ToolSchema`, `ToolCall`, `ToolResult`, `CompletionRequest`, `CompletionResponse`, `AgentResponse`.
+All data flowing through the system uses the types defined in `src/shared/types.py`. These are Pydantic models: `Message`, `ToolSchema`, `ToolCall`, `ToolResult`, `CompletionRequest`, `CompletionResponse`, `AgentResponse`.
 
 Two types deserve special attention.
 
@@ -72,7 +72,7 @@ A tool in our system is not just a function. It is a contract with three parts: 
 
 ### The tool registry
 
-The `ToolRegistry` in `code/ch02/tool_registry.py` is the gatekeeper for all tool execution. It exists because of four specific failure modes:
+The `ToolRegistry` in `src/ch02/tool_registry.py` is the gatekeeper for all tool execution. It exists because of four specific failure modes:
 
 1. **The model calls a tool that does not exist.** Maybe it hallucinated a tool name. Maybe the tool list changed since the system prompt was written. Without the registry, this is an unhandled `KeyError`. With the registry, it is a structured error result that the agent can interpret and recover from.
 
@@ -86,7 +86,7 @@ The key design choice: `execute()` never raises exceptions for tool-level errors
 
 ### The four document tools
 
-The Document Intelligence Agent has four tools, each in its own module under `code/ch02/tools/`.
+The Document Intelligence Agent has four tools, each in its own module under `src/ch02/tools/`.
 
 **Document Loader** (`document_loader.py`): Ingests PDF, Markdown, and plain text files. Each format has its own parsing path. The tool returns raw text -- no interpretation, no summarization. Failure mode: unsupported formats raise a clear error rather than silently producing garbage.
 
@@ -109,7 +109,7 @@ This separation means you can read the tool's contract without reading its imple
 
 Context engineering is the most underrated skill in building LLM-powered systems. The model's output quality is bounded by the quality of its input. A model with poorly assembled context will produce poor answers regardless of how good the model is.
 
-The `ContextPipeline` in `code/ch02/context.py` handles context assembly. It takes three inputs -- a query, a list of citations (retrieved evidence), and optional conversation history -- and produces a list of `Message` objects ready for the model.
+The `ContextPipeline` in `src/ch02/context.py` handles context assembly. It takes three inputs -- a query, a list of citations (retrieved evidence), and optional conversation history -- and produces a list of `Message` objects ready for the model.
 
 ### The system prompt
 
@@ -172,7 +172,7 @@ Context engineering is as much about exclusion as inclusion. Here are the tradeo
 
 ## The agent loop
 
-Everything so far -- tools, context, model client -- is a component. The agent loop in `code/ch02/agent.py` is what connects them into a system that can reason iteratively.
+Everything so far -- tools, context, model client -- is a component. The agent loop in `src/ch02/agent.py` is what connects them into a system that can reason iteratively.
 
 ### Observe-think-act
 
@@ -235,7 +235,7 @@ Escalation is the most important feature an agent can have. A system that always
 
 ### The AgentResponse
 
-The `AgentResponse` model (defined in `code/shared/types.py`) is the output contract:
+The `AgentResponse` model (defined in `src/shared/types.py`) is the output contract:
 
 ```python
 class AgentResponse(BaseModel):

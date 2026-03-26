@@ -19,7 +19,7 @@ from typing import Any
 
 import httpx
 
-from code.shared.types import (
+from src.shared.types import (
     CompletionRequest,
     CompletionResponse,
     Message,

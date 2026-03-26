@@ -2,8 +2,8 @@
 
 import pytest
 
-from code.shared.model_client import ModelClient, create_client
-from code.shared.types import CompletionRequest, Message, Role, ToolSchema
+from src.shared.model_client import ModelClient, create_client
+from src.shared.types import CompletionRequest, Message, Role, ToolSchema
 
 
 def test_create_client_returns_model_client():
@@ -20,7 +20,7 @@ def test_create_client_unknown_provider_raises():
 
 def test_build_tool_schema_openai_format():
     """Tool schemas should be convertible to OpenAI function calling format."""
-    from code.shared.model_client import _to_openai_tool
+    from src.shared.model_client import _to_openai_tool
 
     schema = ToolSchema(
         name="search",

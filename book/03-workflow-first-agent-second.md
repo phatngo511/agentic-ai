@@ -12,7 +12,7 @@ The decision between workflow and agent is the most consequential architectural 
 
 A workflow is a fixed pipeline. Every query takes the same path through the same steps. The code decides what happens next, never the model.
 
-The `DocumentWorkflow` class in `code/ch03/workflow.py` implements our document intelligence task as a three-step pipeline:
+The `DocumentWorkflow` class in `src/ch03/workflow.py` implements our document intelligence task as a three-step pipeline:
 
 1. **Retrieve.** Query the vector index for relevant chunks.
 2. **Build context.** Assemble the system prompt, evidence, and query into a message list.
@@ -57,7 +57,7 @@ These shortcomings are real but bounded. For many production use cases -- FAQ an
 
 ## The bounded agent
 
-The `BoundedDocumentAgent` in `code/ch03/agent.py` solves the same task with a fundamentally different architecture. It has a loop, a step budget, tools it can call, and the autonomy to decide at each step whether it has enough evidence or needs to search again.
+The `BoundedDocumentAgent` in `src/ch03/agent.py` solves the same task with a fundamentally different architecture. It has a loop, a step budget, tools it can call, and the autonomy to decide at each step whether it has enough evidence or needs to search again.
 
 What distinguishes this from the Chapter 2 agent is the explicit engineering for bounded autonomy:
 
@@ -65,7 +65,7 @@ What distinguishes this from the Chapter 2 agent is the explicit engineering for
 
 **Stop conditions.** The loop continues until either the agent produces a text response (no more tool calls), the agent marks the task complete with a confidence score, or the step budget is exhausted.
 
-**State tracking.** The `TaskState` object (defined in `code/ch03/state.py`) records every step: what action was taken, what parameters were used, and what result was observed. This is the audit trail that lets you reconstruct what the agent did and why.
+**State tracking.** The `TaskState` object (defined in `src/ch03/state.py`) records every step: what action was taken, what parameters were used, and what result was observed. This is the audit trail that lets you reconstruct what the agent did and why.
 
 **Graceful degradation.** When the budget is exhausted without a confident answer, the agent does not crash or return nothing. It produces the best partial answer it has, sets `escalated=True`, and includes the reason: "Budget exhausted without reaching confidence threshold." This is the system telling its operator: "I tried, I ran out of room, here is what I found."
 
@@ -73,7 +73,7 @@ What distinguishes this from the Chapter 2 agent is the explicit engineering for
 
 ### The bounded agent's system prompt
 
-The system prompt in `code/ch03/agent.py` is different from the workflow's prompt. It instructs the model about its constraints:
+The system prompt in `src/ch03/agent.py` is different from the workflow's prompt. It instructs the model about its constraints:
 
 ```
 You are a document intelligence agent with bounded autonomy.
@@ -96,7 +96,7 @@ This prompt gives the model an explicit decision framework: assess sufficiency, 
 
 ### State management
 
-The `code/ch03/state.py` module defines two kinds of state:
+The `src/ch03/state.py` module defines two kinds of state:
 
 **SessionState** tracks a conversation across multiple queries. It stores a history of query-answer pairs and counts turns. This is useful for multi-turn interactions where the agent needs to maintain context across questions.
 
@@ -114,7 +114,7 @@ Why track state this carefully? Three reasons:
 
 ## Same task, two ways: the comparison
 
-The `ComparisonRunner` in `code/ch03/compare.py` runs both implementations on the same queries and collects metrics side by side.
+The `ComparisonRunner` in `src/ch03/compare.py` runs both implementations on the same queries and collects metrics side by side.
 
 ```python
 class ComparisonRunner:

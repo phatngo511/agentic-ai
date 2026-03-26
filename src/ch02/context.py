@@ -6,7 +6,7 @@ The quality of the context directly determines the quality of the output.
 
 from __future__ import annotations
 
-from code.shared.types import Citation, Message, Role
+from src.shared.types import Citation, Message, Role
 
 
 SYSTEM_PROMPT = """You are a document intelligence assistant. Your job is to answer questions

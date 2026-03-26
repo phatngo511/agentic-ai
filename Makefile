@@ -24,13 +24,13 @@ eval:
 	python project/doc-intelligence-agent/evals/run_eval.py
 
 run:
-	python code/ch02/run.py
+	python src/ch02/run.py
 
 compare:
-	python code/ch03/compare.py
+	python src/ch03/compare.py
 
 typecheck:
-	mypy code/ --ignore-missing-imports
+	mypy src/ --ignore-missing-imports
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +

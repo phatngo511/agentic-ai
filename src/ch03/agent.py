@@ -12,12 +12,12 @@ from __future__ import annotations
 
 import time
 
-from code.ch02.context import ContextPipeline
-from code.ch02.tool_registry import ToolRegistry
-from code.ch02.tools.retriever import DocumentIndex
-from code.ch03.state import TaskState
-from code.shared.model_client import ModelClient
-from code.shared.types import (
+from src.ch02.context import ContextPipeline
+from src.ch02.tool_registry import ToolRegistry
+from src.ch02.tools.retriever import DocumentIndex
+from src.ch03.state import TaskState
+from src.shared.model_client import ModelClient
+from src.shared.types import (
     AgentResponse,
     CompletionRequest,
     Message,

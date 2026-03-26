@@ -2,13 +2,13 @@
 
 import pytest
 
-from code.ch02.agent import DocumentAgent
-from code.ch02.context import ContextPipeline
-from code.ch02.tool_registry import ToolRegistry
-from code.ch02.tools.chunker import chunk_document
-from code.ch02.tools.retriever import DocumentIndex
-from code.shared.model_client import MockClient
-from code.shared.types import CompletionResponse
+from src.ch02.agent import DocumentAgent
+from src.ch02.context import ContextPipeline
+from src.ch02.tool_registry import ToolRegistry
+from src.ch02.tools.chunker import chunk_document
+from src.ch02.tools.retriever import DocumentIndex
+from src.shared.model_client import MockClient
+from src.shared.types import CompletionResponse
 
 
 @pytest.mark.asyncio

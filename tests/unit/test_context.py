@@ -2,8 +2,8 @@
 
 import pytest
 
-from code.ch02.context import ContextPipeline
-from code.shared.types import Citation, Message, Role
+from src.ch02.context import ContextPipeline
+from src.shared.types import Citation, Message, Role
 
 
 def test_build_system_prompt():

@@ -5,8 +5,8 @@ from __future__ import annotations
 import chromadb
 from chromadb.config import Settings as ChromaSettings
 
-from code.ch02.tools.chunker import Chunk
-from code.shared.types import Citation, ToolSchema, ToolParameter, SideEffect
+from src.ch02.tools.chunker import Chunk
+from src.shared.types import Citation, ToolSchema, ToolParameter, SideEffect
 
 
 SCHEMA = ToolSchema(

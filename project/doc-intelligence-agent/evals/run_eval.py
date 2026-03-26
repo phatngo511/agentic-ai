@@ -11,14 +11,14 @@ import argparse
 import asyncio
 from pathlib import Path
 
-from code.ch02.agent import DocumentAgent
-from code.ch02.context import ContextPipeline
-from code.ch02.tool_registry import ToolRegistry
-from code.ch02.tools.chunker import chunk_document
-from code.ch02.tools.retriever import DocumentIndex
-from code.ch04.eval_harness import EvalRunner, load_cases, load_rubric
-from code.shared.config import get_model_config
-from code.shared.model_client import create_client
+from src.ch02.agent import DocumentAgent
+from src.ch02.context import ContextPipeline
+from src.ch02.tool_registry import ToolRegistry
+from src.ch02.tools.chunker import chunk_document
+from src.ch02.tools.retriever import DocumentIndex
+from src.ch04.eval_harness import EvalRunner, load_cases, load_rubric
+from src.shared.config import get_model_config
+from src.shared.model_client import create_client
 
 
 EVAL_DIR = Path(__file__).parent
@@ -40,7 +40,7 @@ async def main(output_path: str | None = None) -> None:
     index = DocumentIndex(collection_name="eval_docs")
     registry = ToolRegistry()
 
-    code_dir = Path("code")
+    code_dir = Path("src")
     for py_file in code_dir.rglob("*.py"):
         text = py_file.read_text()
         chunks = chunk_document(text, source=py_file.name)

@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from code.ch02.tool_registry import ToolRegistry
-from code.ch02.tools.retriever import DocumentIndex
-from code.ch03.agent import BoundedDocumentAgent
-from code.ch03.workflow import DocumentWorkflow
-from code.shared.model_client import ModelClient
-from code.shared.types import AgentResponse
+from src.ch02.tool_registry import ToolRegistry
+from src.ch02.tools.retriever import DocumentIndex
+from src.ch03.agent import BoundedDocumentAgent
+from src.ch03.workflow import DocumentWorkflow
+from src.shared.model_client import ModelClient
+from src.shared.types import AgentResponse
 
 
 class ComparisonRunner:

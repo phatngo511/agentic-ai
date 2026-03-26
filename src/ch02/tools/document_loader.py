@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from code.shared.types import ToolSchema, ToolParameter, SideEffect
+from src.shared.types import ToolSchema, ToolParameter, SideEffect
 
 
 SCHEMA = ToolSchema(

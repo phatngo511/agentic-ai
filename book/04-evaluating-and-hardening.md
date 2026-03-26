@@ -23,7 +23,7 @@ Evaluation for LLM systems is harder than traditional software testing because t
 
 ### The evaluation harness
 
-The `EvalRunner` in `code/ch04/eval_harness.py` provides the structure. It takes a list of test cases, runs each one through the agent, and scores the results against a rubric.
+The `EvalRunner` in `src/ch04/eval_harness.py` provides the structure. It takes a list of test cases, runs each one through the agent, and scores the results against a rubric.
 
 **Test cases** (`EvalCase`) define what to test:
 
@@ -112,7 +112,7 @@ The harness is only as good as the test cases. Here are principles for building 
 
 ### Structured tracing
 
-You cannot improve what you cannot see. The `Tracer` in `code/ch04/tracer.py` provides structured execution logging for every agent interaction.
+You cannot improve what you cannot see. The `Tracer` in `src/ch04/tracer.py` provides structured execution logging for every agent interaction.
 
 A trace captures the full lifecycle of a request:
 
@@ -170,7 +170,7 @@ In production, implement sampling. Trace 100% of requests in development. In pro
 
 LLM APIs fail. They rate-limit you. They time out. They return garbage. They return 500 errors during peak hours. Your system must handle this without losing work.
 
-The reliability module in `code/ch04/reliability.py` provides three mechanisms: retry, checkpoint, and idempotency.
+The reliability module in `src/ch04/reliability.py` provides three mechanisms: retry, checkpoint, and idempotency.
 
 ### Retry with backoff
 
@@ -228,7 +228,7 @@ This matters for two reasons. First, cost: duplicate tool calls that make model 
 
 LLM costs are variable and unpredictable, especially in agent systems where the number of model calls per request varies. A system that costs $0.005 per request on average can cost $0.10 on a single complex request. Without tracking, these spikes are invisible until the monthly bill arrives.
 
-The `CostProfile` in `code/ch04/cost_profiler.py` tracks per-step cost:
+The `CostProfile` in `src/ch04/cost_profiler.py` tracks per-step cost:
 
 ```python
 class CostProfile(BaseModel):
@@ -242,7 +242,7 @@ Each entry records the step name, model used, tokens consumed, calculated cost, 
 
 ### Cost optimization strategies
 
-**Model routing.** Not every step needs the most expensive model. Use the pricing table to identify which steps can use a cheaper model. Retrieval quality assessment might work fine with GPT-4o-mini. Final answer generation might need GPT-4o. The `ModelConfig` in `code/shared/config.py` supports this with separate `model_name` and `model_name_cheap` fields.
+**Model routing.** Not every step needs the most expensive model. Use the pricing table to identify which steps can use a cheaper model. Retrieval quality assessment might work fine with GPT-4o-mini. Final answer generation might need GPT-4o. The `ModelConfig` in `src/shared/config.py` supports this with separate `model_name` and `model_name_cheap` fields.
 
 **Context pruning.** The biggest cost driver in multi-step agents is context growth. Each step adds tool results to the message list, and the full message list is sent with every model call. Prompt tokens are the dominant cost. Strategies: summarize previous steps instead of including full results, drop low-relevance evidence after each step, limit the number of tool results retained.
 
@@ -266,7 +266,7 @@ Attach this to every `AgentResponse` and log it. Over time, you build a dataset 
 
 Agent systems have a specific threat model that traditional software does not share. The model processes untrusted input (the user's query, retrieved documents) and produces actions (tool calls) based on that input. This means the input can influence the actions in ways the system designer did not intend.
 
-The security module in `code/ch04/security.py` addresses two aspects: permission enforcement and injection detection.
+The security module in `src/ch04/security.py` addresses two aspects: permission enforcement and injection detection.
 
 ### Permission policies
 

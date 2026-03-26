@@ -12,14 +12,14 @@ import asyncio
 import sys
 from pathlib import Path
 
-from code.ch02.agent import DocumentAgent
-from code.ch02.context import ContextPipeline
-from code.ch02.tool_registry import ToolRegistry
-from code.ch02.tools.chunker import chunk_document
-from code.ch02.tools.document_loader import load_document
-from code.ch02.tools.retriever import DocumentIndex
-from code.shared.config import get_model_config
-from code.shared.model_client import create_client
+from src.ch02.agent import DocumentAgent
+from src.ch02.context import ContextPipeline
+from src.ch02.tool_registry import ToolRegistry
+from src.ch02.tools.chunker import chunk_document
+from src.ch02.tools.document_loader import load_document
+from src.ch02.tools.retriever import DocumentIndex
+from src.shared.config import get_model_config
+from src.shared.model_client import create_client
 
 
 async def main(docs_path: str, query: str | None = None) -> None:

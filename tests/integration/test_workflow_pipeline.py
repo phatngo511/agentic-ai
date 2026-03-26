@@ -2,11 +2,11 @@
 
 import pytest
 
-from code.ch02.tools.chunker import chunk_document
-from code.ch02.tools.retriever import DocumentIndex
-from code.ch03.workflow import DocumentWorkflow
-from code.shared.model_client import MockClient
-from code.shared.types import CompletionResponse
+from src.ch02.tools.chunker import chunk_document
+from src.ch02.tools.retriever import DocumentIndex
+from src.ch03.workflow import DocumentWorkflow
+from src.shared.model_client import MockClient
+from src.shared.types import CompletionResponse
 
 
 @pytest.mark.asyncio

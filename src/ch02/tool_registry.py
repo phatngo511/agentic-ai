@@ -24,7 +24,7 @@ from typing import Any, Callable, Awaitable
 
 import structlog
 
-from code.shared.types import ToolSchema, ToolResult
+from src.shared.types import ToolSchema, ToolResult
 
 logger = structlog.get_logger()
 

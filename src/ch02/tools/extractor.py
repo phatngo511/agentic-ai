@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from code.shared.model_client import ModelClient
-from code.shared.types import (
+from src.shared.model_client import ModelClient
+from src.shared.types import (
     CompletionRequest,
     Message,
     Role,

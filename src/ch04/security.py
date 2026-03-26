@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from code.shared.types import SideEffect, ToolSchema
+from src.shared.types import SideEffect, ToolSchema
 
 
 INJECTION_PAYLOADS = [

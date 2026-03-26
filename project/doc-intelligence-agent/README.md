@@ -12,8 +12,8 @@ A document question-answering system that retrieves evidence from ingested docum
 
 ## Two implementations
 
-1. **Workflow** (`code/ch03/workflow.py`): Fixed pipeline. Retrieve, build context, answer. One model call. Deterministic.
-2. **Agent** (`code/ch03/agent.py`): Bounded autonomy. Can refine its search, plan steps, and escalate. Multiple model calls. Adaptive.
+1. **Workflow** (`src/ch03/workflow.py`): Fixed pipeline. Retrieve, build context, answer. One model call. Deterministic.
+2. **Agent** (`src/ch03/agent.py`): Bounded autonomy. Can refine its search, plan steps, and escalate. Multiple model calls. Adaptive.
 
 ## Running
 

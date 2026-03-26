@@ -84,7 +84,7 @@ agentic-ai-for-serious-engineers/
 │   ├── 03-workflow-first-agent-second.md
 │   ├── 04-evaluating-and-hardening.md
 │   └── 05-when-not-to-use-agents.md
-├── code/                          # Working examples, per-chapter
+├── src/                          # Working examples, per-chapter
 │   ├── shared/                    # Model client, config, common types
 │   ├── ch02/                      # Tool registry, context pipeline, first agent
 │   ├── ch03/                      # Workflow vs agent comparison, state, planning

@@ -64,7 +64,7 @@ You are evaluating agentic patterns for a team or organization.
 
 Every chapter uses the same project -- a Document Intelligence Agent that ingests documents, answers questions with citations, and knows when it does not know enough to answer.
 
-This is not a toy example. It has four layers (document, retrieval, reasoning, evaluation), real failure modes, and two implementations of the same task (deterministic workflow and bounded agent). The project code lives in `code/` and the project documentation lives in `project/doc-intelligence-agent/`.
+This is not a toy example. It has four layers (document, retrieval, reasoning, evaluation), real failure modes, and two implementations of the same task (deterministic workflow and bounded agent). The project code lives in `src/` and the project documentation lives in `project/doc-intelligence-agent/`.
 
 The architecture is documented in [`project/doc-intelligence-agent/docs/architecture.md`](../project/doc-intelligence-agent/docs/architecture.md). The failure analysis is documented in [`project/doc-intelligence-agent/docs/failure-analysis.md`](../project/doc-intelligence-agent/docs/failure-analysis.md).
 
