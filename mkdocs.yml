@@ -20,11 +20,13 @@ theme:
   logo: assets/images/logo.svg
   favicon: assets/images/favicon.png
   font: false
+  custom_dir: docs/overrides
   features:
     - navigation.tabs
     - navigation.sections
     - navigation.top
     - navigation.indexes
+    - navigation.path
     - search.suggest
     - search.highlight
     - content.tabs.link
@@ -89,7 +91,7 @@ extra:
       link: https://sunilprakash.com
       name: sunilprakash.com
     - icon: fontawesome/brands/github
-      link: https://github.com/sunilp/agentic-ai-for-serious-engineers
+      link: https://github.com/sunilp/agentic-ai
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/sunilprakash/
   meta:
@@ -100,5 +102,5 @@ extra_css:
   - css/custom.css
 
 copyright: >
-  Copyright &copy; 2026 Sunil Prakash --
+  Copyright &copy; 2026 <a href="https://sunilprakash.com">Sunil Prakash</a> --
   <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
