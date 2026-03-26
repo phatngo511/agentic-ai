@@ -1,0 +1,14 @@
+.DS_Store
+*.swp
+*.swo
+*~
+.claude/
+planning/
+docs/superpowers/
+__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+dist/
+*.egg-info/
