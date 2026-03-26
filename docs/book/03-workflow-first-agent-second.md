@@ -116,6 +116,10 @@ Why track state this carefully? Three reasons:
 
 3. **Resumption.** If the agent is interrupted (crash, timeout, deployment), a checkpointed `TaskState` lets you resume from the last good step rather than starting over. Chapter 4 implements this with the `Checkpoint` class.
 
+![Three Types of Agent State](../../diagrams/source/state-management.svg)
+
+![Workflow vs. Agent: Control Flow Comparison](../../diagrams/source/workflow-vs-agent.svg)
+
 ## Same task, two ways: the comparison
 
 The `ComparisonRunner` in `src/ch03/compare.py` runs both implementations on the same queries and collects metrics side by side.
