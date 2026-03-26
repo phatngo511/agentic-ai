@@ -70,6 +70,11 @@ nav:
   - Projects:
     - Document Intelligence Agent: projects/doc-intelligence-agent.md
     - Incident Runbook Agent: projects/incident-runbook-agent.md
+  - Evidence:
+    - Baseline Eval Report: proof/baseline-eval-report.md
+    - Architecture Comparison: proof/workflow-vs-agent-comparison.md
+    - Trace Examples: proof/trace-example.md
+    - Failure Case Studies: proof/failure-cases.md
   - Code Reference: code/reference.md
   - Roadmap: roadmap.md
 
