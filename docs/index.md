@@ -44,4 +44,6 @@ Two end-to-end systems built incrementally through the chapters:
 
 ---
 
-[GitHub Repository](https://github.com/sunilp/agentic-ai-for-serious-engineers) | [sunilprakash.com](https://sunilprakash.com)
+This book is free to read online. Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) -- share and adapt with credit, non-commercial use only.
+
+[GitHub Repository](https://github.com/sunilp/agentic-ai) | [sunilprakash.com](https://sunilprakash.com)
