@@ -1,0 +1,15 @@
+# Evaluation rubric for the Document Intelligence Agent
+pass_threshold: 0.7
+
+criteria:
+  - name: correctness
+    description: "Does the answer contain the expected factual information?"
+    weight: 0.4
+
+  - name: grounded
+    description: "Is the answer grounded in cited sources rather than training knowledge?"
+    weight: 0.3
+
+  - name: completeness
+    description: "Does the answer address the full scope of the question?"
+    weight: 0.3
