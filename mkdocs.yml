@@ -36,6 +36,7 @@ plugins:
       minify_html: true
   - git-revision-date-localized:
       enable_creation_date: true
+  - social
 
 markdown_extensions:
   - pymdownx.superfences:
