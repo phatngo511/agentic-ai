@@ -2,8 +2,8 @@ site_name: Agentic AI for Serious Engineers
 site_url: https://sunilprakash.com/agentic-ai/
 site_description: A practical field guide to building reliable, evaluable, and production-grade agent systems
 site_author: Sunil Prakash
-repo_url: https://github.com/sunilp/agentic-ai-for-serious-engineers
-repo_name: sunilp/agentic-ai-for-serious-engineers
+repo_url: https://github.com/sunilp/agentic-ai
+repo_name: sunilp/agentic-ai
 edit_uri: edit/main/docs/
 
 theme:
