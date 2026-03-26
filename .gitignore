@@ -5,6 +5,7 @@
 .claude/
 planning/
 docs/superpowers/
+.local/
 __pycache__/
 *.pyc
 .env
