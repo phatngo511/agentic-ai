@@ -98,6 +98,12 @@ The `EvalReport` aggregates results and produces a Markdown summary with:
 
 This report is designed to be committed to version control alongside the code. When you change the prompt and re-run evaluation, you can diff the reports and see exactly what improved and what regressed.
 
+### The evaluation cycle
+
+The harness, rubric, and test cases form a continuous loop: run, score, categorize failures, fix the system, run again. This cycle is what distinguishes a production system from a prototype.
+
+![Evaluation loop showing the cycle from test cases through scoring to failure analysis and system improvement](../../diagrams/source/eval-loop.svg)
+
 ### Building good test cases
 
 The harness is only as good as the test cases. Here are principles for building a useful eval dataset:
@@ -161,6 +167,10 @@ The nesting is deliberate. A retrieval span might contain child spans for embedd
 **Latency analysis.** The `duration_ms` on each span shows where time is spent. Is it the model call? The retrieval? The tool execution? Different bottlenecks have different solutions. Model call latency requires either model routing (use a cheaper/faster model for some steps) or prompt optimization (shorter context). Retrieval latency requires index optimization.
 
 **Persistence.** The tracer can write traces to disk as JSON files. In production, you would push them to a trace storage system (Jaeger, Datadog, or a simple log aggregator). The important thing is that the trace structure is consistent across environments, so the same analysis tools work in development and production.
+
+The following diagram shows a traced agent execution as a waterfall of spans. Each bar represents one unit of work, its width proportional to time. The model calls dominate, but you can see exactly where time goes -- retrieval, context assembly, tool execution, and the second model call that uses the tool's output.
+
+![Trace waterfall diagram showing a 1600ms agent execution decomposed into five spans: Retrieve, Build Context, Model Call #1, Tool extract, and Model Call #2](../../diagrams/source/trace-waterfall.svg)
 
 ### What to trace and what to skip
 
@@ -268,7 +278,11 @@ Attach this to every `AgentResponse` and log it. Over time, you build a dataset 
 
 ### The threat model
 
-Agent systems have a specific threat model that traditional software does not share. The model processes untrusted input (the user's query, retrieved documents) and produces actions (tool calls) based on that input. This means the input can influence the actions in ways the system designer did not intend.
+Agent systems have a specific threat model that traditional software does not share. Understanding where trust boundaries lie is the first step toward enforcing them.
+
+![Trust boundaries diagram showing the layers of trust in an agent system from user input through retrieval to tool execution](../../diagrams/source/trust-boundaries.svg)
+
+The model processes untrusted input (the user's query, retrieved documents) and produces actions (tool calls) based on that input. This means the input can influence the actions in ways the system designer did not intend.
 
 The security module in `src/ch06/security.py` addresses two aspects: permission enforcement and injection detection.
 
@@ -358,6 +372,10 @@ In production, the workflow is:
 None of this is optional for a production system. A system without evaluation is unvalidated. A system without tracing is opaque. A system without reliability engineering will fail under load. A system without cost tracking will exceed its budget. A system without security will eventually be exploited.
 
 ## Failure modes in this chapter's code
+
+Agent systems fail in distinct, recognizable ways. The diagram below maps the failure surface: each region represents a different category of failure, with different root causes and different remediation paths.
+
+![Failure surfaces diagram showing the distinct failure modes in agent systems mapped by category and root cause](../../diagrams/source/failure-surfaces.svg)
 
 **Evaluation scoring is heuristic.** The `_score` method uses string matching and length checks. For production, replace this with LLM-as-judge scoring (use a model to evaluate the answer against the rubric) or human evaluation for a calibration set. The harness structure stays the same -- only the scoring function changes.
 
