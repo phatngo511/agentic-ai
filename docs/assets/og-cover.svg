@@ -3,6 +3,9 @@
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap');
     </style>
+    <marker id="arrow" markerWidth="12" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0,0 L 12,5 L 0,10 L 3,5 Z" fill="#1a1a1a"/>
+    </marker>
   </defs>
 
   <!-- Background -->
@@ -12,39 +15,35 @@
   <rect x="0" y="0" width="1200" height="4" fill="#1a1a1a"/>
 
   <!-- Left side: geometric element -->
-  <g transform="translate(250, 300)">
-    <!-- Outer ring -->
-    <circle cx="0" cy="0" r="140" fill="none" stroke="#e8e8e8" stroke-width="1.5"/>
-    <!-- Middle ring -->
-    <circle cx="0" cy="0" r="100" fill="none" stroke="#d0d0d0" stroke-width="1.5"/>
+  <g transform="translate(250, 295)">
+    <!-- Middle ring (decorative) -->
+    <circle cx="0" cy="0" r="95" fill="none" stroke="#e8e8e8" stroke-width="1"/>
     <!-- Inner ring -->
-    <circle cx="0" cy="0" r="60" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+    <circle cx="0" cy="0" r="52" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
+
+    <!-- Clockwise curved arrows -->
+    <path d="M 20,-148 A 152,152 0 0,1 120,60"
+          fill="none" stroke="#1a1a1a" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M 110,88 A 152,152 0 0,1 -110,88"
+          fill="none" stroke="#1a1a1a" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M -120,60 A 152,152 0 0,1 -20,-148"
+          fill="none" stroke="#1a1a1a" stroke-width="2" marker-end="url(#arrow)"/>
 
     <!-- Three nodes -->
-    <circle cx="0" cy="-140" r="9" fill="#1a1a1a"/>
-    <circle cx="121" cy="70" r="9" fill="#1a1a1a"/>
-    <circle cx="-121" cy="70" r="9" fill="#1a1a1a"/>
-
-    <!-- Connecting arcs -->
-    <path d="M 8,-139 A 140,140 0 0,1 114,64" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
-    <path d="M 114,77 A 140,140 0 0,1 -114,77" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
-    <path d="M -114,64 A 140,140 0 0,1 -8,-139" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
-
-    <!-- Arrow tips -->
-    <polygon points="112,61 120,63 113,69" fill="#1a1a1a"/>
-    <polygon points="-112,77 -116,70 -120,77" fill="#1a1a1a"/>
-    <polygon points="-5,-139 -8,-132 -12,-139" fill="#1a1a1a"/>
+    <circle cx="0" cy="-152" r="11" fill="#1a1a1a"/>
+    <circle cx="132" cy="76" r="11" fill="#1a1a1a"/>
+    <circle cx="-132" cy="76" r="11" fill="#1a1a1a"/>
 
     <!-- Labels -->
-    <text x="0" y="-158" font-family="IBM Plex Mono, monospace" font-size="12" fill="#999" text-anchor="middle" font-weight="500">OBSERVE</text>
-    <text x="148" y="75" font-family="IBM Plex Mono, monospace" font-size="12" fill="#999" text-anchor="start" font-weight="500">ACT</text>
-    <text x="-148" y="75" font-family="IBM Plex Mono, monospace" font-size="12" fill="#999" text-anchor="end" font-weight="500">THINK</text>
+    <text x="0" y="-172" font-family="IBM Plex Mono, monospace" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600">OBSERVE</text>
+    <text x="160" y="82" font-family="IBM Plex Mono, monospace" font-size="12" fill="#1a1a1a" text-anchor="start" font-weight="600">ACT</text>
+    <text x="-160" y="82" font-family="IBM Plex Mono, monospace" font-size="12" fill="#1a1a1a" text-anchor="end" font-weight="600">THINK</text>
 
     <!-- Center -->
-    <circle cx="0" cy="0" r="5" fill="#1a1a1a"/>
-    <text x="0" y="-68" font-family="IBM Plex Mono, monospace" font-size="10" fill="#bbb" text-anchor="middle">evaluate</text>
-    <text x="60" y="40" font-family="IBM Plex Mono, monospace" font-size="10" fill="#bbb" text-anchor="middle">harden</text>
-    <text x="-60" y="40" font-family="IBM Plex Mono, monospace" font-size="10" fill="#bbb" text-anchor="middle">govern</text>
+    <circle cx="0" cy="0" r="4" fill="#1a1a1a"/>
+    <text x="0" y="-62" font-family="IBM Plex Mono, monospace" font-size="10" fill="#bbb" text-anchor="middle">evaluate</text>
+    <text x="55" y="38" font-family="IBM Plex Mono, monospace" font-size="10" fill="#bbb" text-anchor="middle">harden</text>
+    <text x="-55" y="38" font-family="IBM Plex Mono, monospace" font-size="10" fill="#bbb" text-anchor="middle">govern</text>
   </g>
 
   <!-- Right side: text -->
