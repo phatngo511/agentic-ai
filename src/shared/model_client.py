@@ -2,6 +2,12 @@
 
 This is the interface between your agent code and any LLM provider.
 The rest of the codebase never imports openai or anthropic directly.
+
+Why this matters:
+- You can switch providers without rewriting agent logic.
+- You can test with a mock client.
+- You can add cost tracking in one place.
+- You can route between cheap and expensive models without changing callers.
 """
 
 from __future__ import annotations
@@ -199,7 +205,7 @@ def create_client(
         return AnthropicClient(api_key=api_key, model_name=model_name)
     elif provider == "local":
         url = base_url or "http://localhost:11434/v1"
-        # FIX: Sửa lỗi hardcode 'local'. Ưu tiên dùng api_key nếu có.
+        # FIX: Resolve hardcoded 'local' key by prioritizing provided api_key.
         actual_key = api_key if api_key else "local"
         return OpenAIClient(api_key=actual_key, model_name=model_name, base_url=url)
     elif provider == "mock":
