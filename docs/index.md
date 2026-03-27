@@ -5,6 +5,10 @@ hide:
   - toc
 ---
 
+<div style="text-align: center; margin: 0 auto 2rem;">
+  <img src="assets/cover.svg" alt="Agentic AI for Serious Engineers" style="max-width: 320px; width: 100%;" />
+</div>
+
 # Agentic AI for Serious Engineers
 
 **A practical field guide to building reliable, evaluable, and production-grade agent systems**
