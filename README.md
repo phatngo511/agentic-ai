@@ -1,7 +1,13 @@
 # Agentic AI for Serious Engineers
 
-[![Read Online](https://img.shields.io/badge/Read_Online-sunilprakash.com-1a1a1a?style=flat-square)](https://sunilprakash.com/agentic-ai/)
-[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey?style=flat-square)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+<p align="center">
+  <img src="docs/assets/cover.svg" alt="Agentic AI for Serious Engineers" width="360" />
+</p>
+
+<p align="center">
+  <a href="https://sunilprakash.com/agentic-ai/"><img src="https://img.shields.io/badge/Read_Online-sunilprakash.com-1a1a1a?style=flat-square" alt="Read Online"></a>
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey?style=flat-square" alt="License: CC BY-NC-SA 4.0"></a>
+</p>
 
 **A practical field guide to building reliable, evaluable, and production-grade agent systems.**
 
