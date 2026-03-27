@@ -15,11 +15,18 @@
 
 ---
 
-Most agentic AI material teaches you how to make an impressive demo. This repo teaches engineers how to build agent systems that survive real-world constraints.
+Most agentic AI content teaches you how to build a flashy demo. This book teaches you what breaks when you ship one.
+
+**Start here in 15 minutes:** read [Chapter 7: When Not to Use Agents](https://sunilprakash.com/agentic-ai/book/07-when-not-to-use-agents/). It is the most valuable chapter because it saves you from building the wrong thing. Then work forward from [Chapter 1](https://sunilprakash.com/agentic-ai/book/01-what-agentic-means/).
+
+**Or run the code:**
+```bash
+make install && make test && make run
+```
 
 ## What This Is
 
-A deep, engineering-first guide to designing, building, evaluating, and hardening agentic AI systems. Seven chapters of structured material, working Python code for every concept, and two threaded projects that run from first principles through production readiness. This is not a tutorial. It is a field manual.
+Seven chapters, two end-to-end projects, 52+ passing tests, and working Python code for every concept. Not a tutorial. A field manual for engineers building agent systems that need to survive unclear requirements, bad tool outputs, partial failures, prompt injection, and cost pressure.
 
 ## Who This Is For
 
